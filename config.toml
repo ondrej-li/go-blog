@@ -1,0 +1,8 @@
+baseURL = "https://go.ondralinek.cz/"
+languageCode = "cs-cz"
+title = "Jazyk #Go(lang)"
+theme = "hugo-code-editor-theme"
+
+[params]
+    author = "Ondřej Linek"
+    locale = "cs-CZ"
