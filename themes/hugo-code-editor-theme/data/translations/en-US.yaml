@@ -1,7 +1,7 @@
-mostrecentposts: Most recent posts
-tags: Tags
-categories: Categories
-datepublished: Published
+mostrecentposts: Nejnovější příspěvky
+tags: Tagy
+categories: Kategorie
+datepublished: Publikováno
 root: Root
-gotoroot: Go to root
-notfoundmsg: Sorry, page not found ... :(
+gotoroot: Na root
+notfoundmsg: Pardón, stránka nenalezena ... :(
