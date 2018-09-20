@@ -2,6 +2,8 @@ baseURL = "https://go.ondralinek.cz/"
 languageCode = "cs-CZ"
 title = "Jazyk #Go(lang)"
 theme = "hugo-code-editor-theme"
+disqusShortname = "ondralinek-cz.disqus.com"
+
 
 [params]
     author = "Ondřej Linek"
