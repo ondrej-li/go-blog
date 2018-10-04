@@ -12,7 +12,7 @@ title = "Reflexe v #Go"
 
 V tomto příspěvku se podíváme na to, co to je reflexe, na co se používá a hlavně jak se používá. Hned z kraje jedna moudrá hláška
 
-### Zřejmě je vždy lepší než chytré ... a reflexe není nikdy zřejmá.
+#### Zřejmé je vždy lepší než chytré ... a reflexe není nikdy zřejmá.####
 
 Takže varování hned na úvod - reflexe ano, ale musíte k tomu mít dobrý důvod.
 
