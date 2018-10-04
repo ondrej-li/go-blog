@@ -1,7 +1,7 @@
 +++
 author = "Ondřej Linek"
 categories = ["pokročilý"]
-date = 2018-10-4T07:21:00Z
+date = 2018-10-04T07:21:00Z
 description = "Reflexe - co, na co a jak"
 draft = false
 slug = "reflexe"
