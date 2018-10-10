@@ -1,7 +1,7 @@
 +++
 author = "Ondřej Linek"
 categories = ["názory"]
-date = 2018-10-04T07:21:00Z
+date = 2018-10-10T12:50:00Z
 description = ""
 draft = false
 slug = "smutny-den"
