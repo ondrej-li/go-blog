@@ -10,7 +10,7 @@ title = "Mage - kompilace"
 
 +++
 
-V minulém díle jsme se podíval na nástroj [mage](https://magefile.org/) a jeho použití pro sestavování #Go programů. Tentokrát se podíváme na jednu specialitku, která asi nebyla předem zřejmá, ale rozhodně stojí za prozkoumání.
+V minulém díle jsme se podívali na nástroj [mage](https://magefile.org/) a jeho použití pro sestavování #Go programů. Tentokrát se podíváme na jednu specialitku, která asi nebyla předem zřejmá, ale rozhodně stojí za prozkoumání.
 
 Jak z minula víte, `mage` potřebuje tzv. `magefile`. Magefile je vlastně go-skript na stereoidech. Pokud tedy chceme sestavit projekt, který používá `magefile`, tak zadáme na příkazovou řádku něco jako `mage` a máme hotovo (když je tedy definovaný defaultní cíl). Pokud bychom ovšem chtěli, aby se náš projekt takto pěkně spustil na našem CD/CI serveru, tak budeme muset přidat ještě něco - instalaci samotného `mage`. Takže náš skript by vypadal jako 
 
@@ -23,7 +23,7 @@ mage
 
 Samozřejmě jsou tu i jiné varianty - například použít docker, kde v image by byl už `mage` přítomný, nebo pokud máte dedikovaný server, tak se `mage` nainstalovat přímo na něj.
 
-Mnohem pohodlnější je ale možnost si z `magefile` udělat spustitelný soubor. Prostě exáč. Velmi jednoduše, stačí jen být v adresáři, kde máte svůj `magefile` a zadat 
+Mnohem pohodlnější je ale možnost si z `magefile` udělat spustitelný soubor. Prostě exáč. Ruku na srdce, jak často měmíte svůj ma(k|g)efile? A mezi tím, než ho zase změníte si můžete svůj magefile zkompilovat. Velmi jednoduše, stačí jen být v adresáři, kde máte svůj `magefile` a zadat 
 
 ```bash
 mage -compile ./build
