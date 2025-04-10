@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Pokročilý</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+
+<div class="articles-list">
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/testujeme-v-golang-cast-1/">Testujeme v #Golang (část 1)</a> - 2016-09-21 06:08:12</h3>
+        <p>Testování pro mnoho lidí (včetně mě) není nic zábavného, ale po letech programování připouštím, že je lehčí mít pořádné testy, než neustále kompilovat a spouštět aplikaci a pomocí debuggeru se snažit pochopit, co je špatně. Už ta ztráta času. I když je <em>Go</em> hodně rychlé, kompilace pořád představuje pár vteřin, následně spustit aplikaci, dostat na místo, kde si chcete něco ověřit a následně konečně to ověřit. Mnohdy to vyžaduje např. zásahy do databáze, otevírání browseru a navigace na stránky apod. Prostě a jednoduše, je to  neefektivní. A hlavně, jsme programátoři, automatizujeme co se dá!</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/kompilace-golang-v-dockeru/">Kompilace #Golang v Dockeru</a> - 2016-09-17 09:07:31</h3>
+        <p>Tentokrát kratší vsuvka.</p>
+<p>Potřeboval jsem na svém  Macovi zkompilovat program pro 🐧 Linux. Samozřejmě mě jako první napadl cross compiler, ale to není ono. Nehledě na to, že bych pak stejně nemohl program vyzkoušet. Samozřejmě by s trochou cviku šlo zkusit nějaký VirtualBox apod., ale mě napadlo elegantnější řešení - <a href="https://www.docker.com">Docker</a>!</p>
+<p>Nejdřív si nainstalujete na počítač docker - podívejte se na <a href="https://www.docker.com/products/overview">instalační stránky</a> a vyberte si instalaci podle svého systému. V ideálním případě by toto mělo fungovat:</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/konfigurace-programu-v-golang/">Konfigurace programu v #Golang</a> - 2016-09-14 17:33:13</h3>
+        <p>Dnes si povíme něco o tom, jak si nakonfigurovat takový program v <em>Go</em>.</p>
+<p>Konfigurací zde myslím způsob, jak předat programu parametry, aby mohl běžet nezávisle. V zásadě máte několik možností a pojďme si o nich povědět detailněji.</p>
+<ol>
+<li>parametry příkazové řádky</li>
+<li>pomocí proměnných prostředí</li>
+<li>databáze</li>
+<li>specializované programy</li>
+</ol>
+<p>Tento výčet není konečný, ale prozatím si s ním vystačíme.</p>
+<h3 id="příkazová-řádka">Příkazová řádka</h3>
+<p>Podívejme se na první možnost, parametry na příkazové řádce.</p>
+<p>Pro tento případ má <em>Go</em> package <code>flags</code>. Možná už jste si sami všimli, že na rozdíl od jazyků odvozených od <em>C</em> (<em>C</em>, <em>C++</em>, <em>Java</em> apod.) tu funkce <code>main</code> nepřijímá pole parametrů. Pro připomenutí, takto vypadá <code>main</code> v <em>Go</em>.</p>
+    </article>
+    
+</div>
+
+    <ul class="pagination pagination-default">
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/" aria-label="First" class="page-link" role="button"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/2/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Next" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Last" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

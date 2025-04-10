@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Testujeme v #Golang (část 2)</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Testujeme v #Golang (část 2)</h1>
+<h4>Publikováno 09-24-2016 11:56:57</h4>
+
+<article>
+    <p>V první části povídání o testování jsme si ukázali vcelku jednoduchý test a spustili jsme si jej.</p>
+<p>Jedním z požadavků na testování je, aby testy doběhly co nejdříve. Je to proto, že chceme mít smyčku zpětné vazby co nejkratší. Nikdo nestojí o to, aby čekal více jak minutu na informaci, že je všechno v pořádku. Ale pak se naskytuje otázka - co v případě, že test závisí na něčem pomalém. Třeba databázi. Nebo volání externí služby přes HTTP. V tom případě tu máme celou plejádu možností a podíváme se na ně.</p>
+<p>První, co zkušený programátor udělá je mockování. Jelikož, doufejme opodstatněně, předpokládá, že věci typu databáze prostě &ldquo;fungují&rdquo; (a nebo je to problém jiného, pokud ne), tak není potřeba ji skutečně testovat. Stačí, když víme, co z databáze dostaneme a přesvědčit váš kód, aby to akceptoval. V našem případě. Řekněme, že nše databáze má seznam uživatelů a my máme funkci, která nahraje jednoho podle <code>ID</code>. Tedy naprosto běžný scénář. My samozřejmě víme, jak vypadá takový záznam o uživateli a také nechceme během testu pokládat dotaz do databáze, protože to bude minimálně 10ms. A to neberu v potaz, že by tam musel očekávaný záznam být (ne ne, podle toho, co testujem). Ukažme si třeba, jak by daný kód mohl vypadat.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;sql&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;errors&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserRecord</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Id</span> <span style="color:#66d9ef">uint64</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserManager</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">FindUserByUserName</span> (<span style="color:#a6e22e">user</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">UserRecord</span>, <span style="color:#66d9ef">error</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DB</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">DB</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sql</span>.<span style="color:#a6e22e">DB</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Authenticator</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Authenticate</span> (<span style="color:#a6e22e">username</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">password</span>) (<span style="color:#66d9ef">bool</span>, <span style="color:#66d9ef">error</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DefaultAuthenticator</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">db</span> <span style="color:#a6e22e">UserManager</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DB</span>) <span style="color:#a6e22e">FindUserByUserName</span> (<span style="color:#a6e22e">user</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">UserRecord</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">rows</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Query</span>(<span style="color:#e6db74">&#34;SELECT username, password FROM user WHERE id = $1&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Next</span>() {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">UserRecord</span>{<span style="color:#a6e22e">Id</span>:<span style="color:#a6e22e">id</span>}
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Scan</span> (<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Id</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Password</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;No user found&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DefaultAuthenticator</span>) <span style="color:#a6e22e">Authenticate</span> (<span style="color:#a6e22e">username</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">password</span> <span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">bool</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">userRecord</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">FindUserByUserName</span>(<span style="color:#a6e22e">username</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">userRecord</span>.<span style="color:#a6e22e">Password</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">password</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Tento kód nám nejen implementuje načítání uživatele z databáze (doma nezkoušet, v praxi hesla do databáze neukládáme, ani pod nátlakem!), ale i ověřování hesla. Možná si řeknete, co to tam ten chlap dělá s interfacama? Interfacy zde používáme proto, že nám dovolují abstrakci. Zatímco pro běh programu použijeme <code>DB</code> jakožto implementátora interfacu <code>UserManager</code>, v testech si jej nahradíme naší implementací, která dělá to, co po ní chceme my. Tedy například nepůjde do databáze. Zrovna v tomto si pomůžeme knihovnou <code>github.com/stretchr/testify/mock</code>. A když ji spřáhneme s knihovnou <code>github.com/stretchr/testify/assert</code> ze stejné stáje, jsme neporazitelní. No posuďte sami:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;testing&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/stretchr/testify/mock&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/stretchr/testify/assert&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MockUserManager</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mock</span>.<span style="color:#a6e22e">Mock</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MockUserManager</span>) <span style="color:#a6e22e">FindUserByUserName</span> (<span style="color:#a6e22e">user</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">UserRecord</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Called</span>(<span style="color:#a6e22e">user</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#ae81ff">0</span>).(<span style="color:#f92672">*</span><span style="color:#a6e22e">UserRecord</span>), <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestDefaultAuthenticator_Authenticate</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mum</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">MockUserManager</span>{}
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">userRecord</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">UserRecord</span>{<span style="color:#a6e22e">Id</span>:uint64(<span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#a6e22e">Password</span>: <span style="color:#e6db74">&#34;password&#34;</span>}
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">da</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">DefaultAuthenticator</span>{<span style="color:#a6e22e">db</span>: <span style="color:#a6e22e">mus</span>}
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mum</span>.<span style="color:#a6e22e">On</span>(<span style="color:#e6db74">&#34;FindUserByUserName&#34;</span>, <span style="color:#e6db74">&#34;user&#34;</span>).<span style="color:#a6e22e">Return</span>(<span style="color:#a6e22e">userRecord</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">da</span>.<span style="color:#a6e22e">Authenticate</span>(<span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;password&#34;</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mum</span>.<span style="color:#a6e22e">AssertExpectations</span>(<span style="color:#a6e22e">t</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Zde jsme si vytvořili &ldquo;mock&rdquo; interface <code>UserManager</code> se jménem <code>MockUserManager</code> a &ldquo;implementovali&rdquo; funkci <code>FindUserByUserName</code>. Ovšem naše verze nedělá nic jiného, než je porovná, že je opravdu volána s parametrem &ldquo;user&rdquo; a pokud ano, tak vrátí náš <code>userRecord</code> a žádnou chybu. Pokud test spustíme, tak si ověříme, že <code>Authenticate</code> funguje, ale nemusíme kvůli tomu jít do datábáze, takže test nám projdu kdykoliv (i když třeba vůbec žádnou databázi nemáme) a hlavně, opravdu rychle.</p>
+<p>Možná si vzpomenete, jak jsme říkal, že testování je součást vývoje, která se nedodá až nakonec vývoje? Toto je onen případ. Tento kód je záměrně napsaný, aby byl dobře testovatelný. Samozřejmě bych mohl načítání uživatele dát do globální funkce, ale pak bych měl problém tuto funkci měnit pro účely testu.</p>
+<p>Další možností, abychom urychlili testy je jejich paralelní provádění. V našich počítačích máme několik procesorů, tak proč je pořádně nevyužít?!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestParalelně</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Parallel</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// a test, jak je běžné</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Pokud byste chtěli ovlivnit, v kolika procesech testy poběží, tak použijte parametr <code>go test -parallel 2</code>.</p>
+<p>Některé testy ovšem chcete spouštět jen když jste například na síti, nebo pokud máte čas. K tomu slouží <code>t.Skip()</code>. V testu můžeme mít například něco podobného:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Test_Skip</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;INTEGRATION&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Skip</span>(<span style="color:#e6db74">&#34;test přeskakuji&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Tak v poslední části povídání o testech si ukážeme, jak spouštět podtesty a další &ldquo;vychytávky&rdquo;. Ovšem před tím se podíváme na něco mnohem zajímavější - práci s databázi. Zde jsem toto téma nakousli, ale ještě je potřeba jej pořádně dovyprávět.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

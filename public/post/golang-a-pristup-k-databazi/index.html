@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>#Golang a přístup k databázi</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>#Golang a přístup k databázi</h1>
+<h4>Publikováno 09-27-2016 05:31:55</h4>
+
+<article>
+    <p>V dnešní době nad neexistuje aplikace, která by nepřistupovala do databáze. Samozřejmě si můžeme ukládat data do souboru a mnohdy je to i efektivnější řešení, ale databáze nám luxusně umožní data ukládat a načítat a nestarat se přitom o detaily. V dnešní době rozdělujeme databáze do 2 proudů.</p>
+<ul>
+<li>SQL databáze (nebo také relační databáze) - tedy databáze, kde jsou data ukládána jako relace mezi entitami. Většina z nich také garantuje ACID (atomičnost operací, konzistenci stav, integritu dat a durabilitu uložení). Mezi nejznámější patři <a href="https://www.mysql.com/">MySql</a>, <a href="https://www.postgresql.org/">PostgreSQL</a>, <a href="https://www.oracle.com/database/index.html">Oracle</a>, MS SQL Server atd.</li>
+<li>NoSQL databáze - tedy databáze, které nevyžadují  striktní schéma (ad hoc ukládání dat) místo ACID používají <a href="https://en.wikipedia.org/wiki/Eventual_consistency">BASE</a> (pouze základní dostupnost, měnící se (měkký) stav a eventuální konzistenci) - což samo osobě je slovní hříčka - prostě kyselost a zásaditost :-). Představily jsou <a href="https://www.mongodb.com/">MongoDB</a>, <a href="http://redis.io/">Redis</a>, <a href="http://cassandra.apache.org/">Apache Cassandra</a>, <a href="https://www.elastic.co/products/elasticsearch">ElesticSearch</a> apod.</li>
+</ul>
+<p>Dnes si povíme, jak přistupovat k SQL databázím. Už proto, že <em>Go</em> tyto databáze standardizuje, na rozdíl od NoSQL, kde standard není.</p>
+<p>V první řadě, pro každou databázi potřebujeme ovladač. Pokud se budeme chtít připojit k PostgreSQL, tak si musíme stáhnout ovladač. A jelikož ovladač zasahuje do inicializace, ale sám o sobě nic nepřináší, použijeme onen magický <em>import pro vedlejší účinky</em>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/lib/pq&#34;</span>
+</span></span></code></pre></div><p>Tím pádem se ovladač může zaregistrovat a <code>database/sql</code> o něm ví. A tím pádem je pak možno udělat něco jako toto a připojit se k databázi:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;postgres://username:password@hostname/db_name&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sql</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;postgres&#34;</span>, <span style="color:#a6e22e">dataSourceName</span>)
+</span></span></code></pre></div><p>Jakmile máme připojení do databáze (v reálu počítám, si ověříte, že spojení dopadlo dobře, např. <code>db.Ping()</code>), můžeme začít úřadovat a pokládat dotazy.</p>
+<p>Nejdříve si ukážeme, jak načíst celý dotaz:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">rows</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Query</span>(<span style="color:#e6db74">&#34;SELECT sloupec FROM tabulka WHERE a = $1&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sloupce</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Next</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sloupec</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sloupec</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sloupce</span> = append(<span style="color:#a6e22e">sloupce</span>, <span style="color:#a6e22e">sloupec</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nejdříve získáme řádky pomocí dotazu (<code>db.Query</code>). Následně si preventivně zaregistrujeme funkci <code>rows.Close()</code> jako defer, abysme za všech okolností řádky zabřely. Následně si projdeme všechny řádky a uložíme si je do slicu stringů. S tím už pak můžeme dělat cokoliv.</p>
+<p><code>database/sql</code> umožňuje načíst také jen jednu řádku pomocí <code>db.QueryRow</code>, ale osobně to nedoporučuji, jelikož to padá, když to nenajde ani jednu řádku. Pokud tedy chcete jednu řádku, pak doporučuji postup podobný prvnímu příkladu:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Next</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sloupec</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sloupec</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sloupce</span> = append(<span style="color:#a6e22e">sloupce</span>, <span style="color:#a6e22e">sloupec</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Prostě po první řádce smyčku ukončíte.</p>
+<p>V <a href="https://go.ondralinek.cz/2016/09/24/testujeme-v-golang-cast-2/">minulém díle</a> jsme se podívali, jak testovat a demonstroval jsem tam, jak přistupovat k datům pomocí interfaců. Za tím si stojím a tím pádem nebudu opakovat kód, jak si takový interface udělat.</p>
+<p>Mnozí z vás budou asi hned mít otázku: &ldquo;Jak <em>Go</em> pracuju s <code>NULL</code>&rdquo;. A je to správná otázka. <em>Go</em> umožňuje mít nil, tedy pointer(ukazatel) na nic, ale co když nepoužíváme ukazatele? Popravdě funkce <code>Scan</code> ani neumí pracovat s ukazateli a ukazatele. Pokud tedy např. máte v databázi <code>VARCHAR</code>, tak musíte poslat jako hodnotu k uložení ukazatel na <code>string</code>. Pokud je ale hodnota sloupce <code>NULL</code>, pak <em>Go</em> nahlásí chybu. Pro tyto účely je tu ovšem <code>sql.NullString</code> apod. (<code>NullBool</code> &hellip;). Vnitřně má si totiž uchovává dvě hodnoty. <code>Value</code> tedy string hodnoty a <code>Valid</code>, což je příznak, jestli byla hodnota nastavena. Pokud je <code>false</code>, pak byla hodnota <code>NULL</code>. Dá se použít jako přímá náhrada <code>string</code>, tedy např. jako v našem případě.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">sloupce</span> <span style="color:#f92672">:=</span> make(<span style="color:#a6e22e">sql</span>.<span style="color:#a6e22e">NullString</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Next</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sloupec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sql</span>.<span style="color:#a6e22e">NullString</span>{}
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sloupec</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Valid</span> {
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">sloupce</span> = append(<span style="color:#a6e22e">sloupce</span>, <span style="color:#a6e22e">sloupec</span>.<span style="color:#a6e22e">Value</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Možná vás v SQL dotazu zaujalo, že je tam podmínka <code>WHERE a = $1</code> a ptali jste se, co to je ono <code>$1</code>. Nuže je to jen zástupný znak. PostgreSQL tento znak nahradí řetězcem <code>&quot;b&quot;</code>, ale v praxi to bude nejspíš nějaká proměnná. Důvod je prostý, pokud bychom začali SQL řetězce sčítat (např. pomocí <code>ftm.Sprintf</code>, tak bychom si akorát zadělali na <a href="https://cs.wikipedia.org/wiki/SQL_injection">SQL code injection</a>.</p>
+<p>Teď když víme o tom, jak si data z databáze načíst, si můžeme ukázat, jak data do databáze vložit.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;INSERT INTO tabulka (a) VALUES($1)&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Vložena %d řádka s ID  %d&#34;</span>, <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">RowsAffected</span>(), <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">LastInsertId</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Opět jednoduché. V příkladu předpokládám, že <code>tabulka</code> má ID automaticky generované.</p>
+<p>A na závěr ještě ukázka transakcí. <a href="https://cs.wikipedia.org/wiki/Datab%C3%A1zov%C3%A1_transakce">ACID databáze</a> umožňují provádět několik dotazů v rámci transakcí, kdy se buď provede všechno, nebo nic. Typický příklad je ono okřídlené převod na účtu. Potřebuji v něm připsat peníze na účet příjemce a odepsat z účtu zasílatele. A buď se uloží obě změny, nebo žádná. Můžete se zeptat, proč by se neprovedli obě, inu, někdy dojde k chybě, nebo závadě (třeba nám vypnou proud, rozbije se disk apod.) a to, co se mělo provést společně se nám rozpojí. <em>Go</em> SQL má podporu transakcí a vypadá to následovně.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">částka</span>, <span style="color:#a6e22e">zákazník1</span>, <span style="color:#a6e22e">zákazník2</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">tx</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Begin</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Exec</span> (<span style="color:#e6db74">&#34;UPDATE ucet SET zustatek = zustatek - $1 WHERE zakaznik = $2&#34;</span>, <span style="color:#a6e22e">částka</span>, <span style="color:#a6e22e">zákazník1</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Rollback</span>()
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Exec</span> (<span style="color:#e6db74">&#34;UPDATE ucet SET zustatek = zustatek + $1 WHERE zakaznik = $2&#34;</span>, <span style="color:#a6e22e">částka</span>, <span style="color:#a6e22e">zákazník2</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Rollback</span>()
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Commit</span>()
+</span></span></code></pre></div><p>Jedná se o lehký úvod, ale asi máte představu, jak taková transakce vypadá.</p>
+<p>Tímto prozatím uzavírám kapitolu seznámení se s SQL databázemi a těším se příště.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

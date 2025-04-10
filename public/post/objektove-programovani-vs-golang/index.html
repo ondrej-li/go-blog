@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Objektové programování vs. #Golang</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Objektové programování vs. #Golang</h1>
+<h4>Publikováno 10-24-2016 19:15:30</h4>
+
+<article>
+    <p>Dnes se podíváme na <em>Go</em> tak trochu filozoficky. Je, nebo není <em>Go</em> objektový jazyk, jak v tomto smyslu vypadá jeho srovnání se v současnosti nejpopulárnějším jazykem Java?</p>
+<p><em>Go</em> je opravdu tak trochu jako chytrá horákyně. Je funkcionální, ale ne zcela, je objektový, ale ne zcela. Než začne polemizovat o objektovosti <em>Go</em>, pojďme si připomenout, co dělá jazyk objektovým.</p>
+<ul>
+<li>Třídy a objekty. Vše jsou objekty a objekty jsou instance tříd.</li>
+<li>Zapouzdření. Data a operace nad daty jedno jsou.</li>
+<li>Dědičnost. Třídy dědí svoje vlastnosti a potomek třídy je specializací svého rodiče.</li>
+<li>Polymorfismus. Potomek dovede nahradit svého předka.</li>
+<li>Přetěžování. Metoda může mít stejné jméno, ale jiné parametry.</li>
+</ul>
+<p>Nuže. <em>Go</em> nemá třídy a objekty. Má ovšem struktury a funkce, které nad nimi operují, tzv. přijímače (receivers). Jelikož volání přijímače nad strukturou se označuje operátorem tečky, tak to v kódu vypadá stejně, jako např. v Javě.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Objekt</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Jméno</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">o</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Objekt</span>) <span style="color:#a6e22e">Metoda</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Zavolána metoda na %s.\n&#34;</span>, <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">Jméno</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Objekt</span>{<span style="color:#a6e22e">Jméno</span>: <span style="color:#e6db74">&#34;objekt&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">Metoda</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Zápis volání vypadá úplně stejně jako v Javě. Co je potřeba mít na paměti je, že <em>Go</em> nemá konstruktory. Inicializace se provádí při přiřazení. Většinou se to obchází přes arbitrární funkci <code>New</code> (např. <code>func New() *Objekt {...}</code> ), ale není to podmínkou, člověku se meze nekladou.</p>
+<p><em>Go</em> nemá klasické zapouzdření. K položkám struktury se dá buď přistoupit odkudkoliv, nebo jen v rámci balíčku (viz. malá/velká počáteční písmena názvu položky struktury). Není nic jako <code>public</code>, <code>protected</code> a <code>private</code>.</p>
+<p>Co se týče dědičnosti, tam je to v <em>Go</em> komplikované. <em>Go</em> totiž podporuje kompozici. Struktura může &ldquo;absorbovat&rdquo; jiné struktury. Třeba takto</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">A</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Proměnná1</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">B</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Proměnná2</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">C</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">A</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">B</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">proměnná</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">C</span>{<span style="color:#a6e22e">A</span>{<span style="color:#a6e22e">Proměnná1</span>: <span style="color:#e6db74">&#34;A&#34;</span>}, <span style="color:#a6e22e">B</span>{<span style="color:#a6e22e">Proměnná2</span>: <span style="color:#e6db74">&#34;B&#34;</span>}}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Výsledek: [%#v]\n&#34;</span>, <span style="color:#a6e22e">proměnná</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;proměnná.Proměnná1: %s\n&#34;</span>, <span style="color:#a6e22e">proměnná</span>.<span style="color:#a6e22e">Proměnná1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;proměnná.Proměnná2: %s\n&#34;</span>, <span style="color:#a6e22e">proměnná</span>.<span style="color:#a6e22e">Proměnná2</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Struktura <code>C</code> je kompozicí <code>A</code> a <code>B</code> a má tak položky z obou struktur. V tomto směru jde tedy <em>Go</em> dál, než Java. Ta nepodporuje dědění z více tříd, i když s pomocí default metod interfaců se dostává hodně blízko.</p>
+<p><em>Go</em> nemá dědičnost. Nepodporuje žádnou hierarchii tříd, nebo v případě <em>Go</em> struktur. Nejsou tu potomci a předci. Tím pádem odpadá polymorfismus. Tedy do určité míry. Nemůžeme udělat toto.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">A</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Proměnná1</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">B</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Proměnná2</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">C</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">A</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">B</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">A</span>{<span style="color:#a6e22e">Proměnná1</span>: <span style="color:#e6db74">&#34;A&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">C</span>{<span style="color:#a6e22e">A</span>{<span style="color:#a6e22e">Proměnná1</span>: <span style="color:#e6db74">&#34;A&#34;</span>}, <span style="color:#a6e22e">B</span>{<span style="color:#a6e22e">Proměnná2</span>: <span style="color:#e6db74">&#34;B&#34;</span>}}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">a</span> <span style="color:#a6e22e">A</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;a.Proměnná1 %s\n&#34;</span>, <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Proměnná1</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Jakkoliv <code>C</code> obsahuje <code>Proměnná1</code> kompozicí z <code>A</code>, tak <em>Go</em> nepovolí jeho použití namísto <code>A</code>. <em>Go</em> ovšem podporuje interfacy. A to implicitně. Tzn. nemusíte psát, že struktura implementuje interface, jako v Javě, stačí jen interface implementovat. Jako tady.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">I</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ŘekniAhoj</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">A</span> <span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">A</span>) <span style="color:#a6e22e">ŘekniAhoj</span>() { <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Ahoj z A&#34;</span>) }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">B</span> <span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">B</span>) <span style="color:#a6e22e">ŘekniAhoj</span>() { <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Ahoj z B&#34;</span>) }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">A</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">B</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">b</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">I</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">ŘekniAhoj</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Všimněte si, že ani <code>A</code>, ani <code>B</code> nikde neříkají, že implementují interface <code>I</code>, ale tím, že obě mají přijímač na <code>ŘekniAhoj()</code>, jsou automaticky implementátory interfacu <code>I</code>. Proto je pak můžeme použít při volání <code>Funkce</code>. Je to sice mnohem praktičtější, nemusíte nikde psát, co všechno vaše struktura implementuje, ale na druhou stranu ani nevíte, kdo všechno implementuje váš interface.</p>
+<p>Co se přetěžování týče, v tomto směru vás <em>Go</em> zklame. Nic takového nepodporuje. Funkce s jedním názvem používá jednu sadu parametrů. Toto například nejde.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Funkce</span>(<span style="color:#e6db74">&#34;Ahoj&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;i: %s\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;i: %d\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Funkce</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;i: %d; j: %s\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><em>Go</em> nepodporuje ani genericsy, tedy obecné typy. A proto si příště ukážeme, jaké máme  v tomto směru možnosti. Jen napovím, sílu hledej v <code>interface{}</code> :-)</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>#Golang a Git</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>#Golang a Git</h1>
+<h4>Publikováno 09-12-2016 19:02:00</h4>
+
+<article>
+    <p>Čas od času budete potřebovat svoje dílo uložit někam jinam, než na svůj počítač. Mnozí budou dokonce pomýšlet na sdílení svého kódu s ostatními např. na <a href="www.github.com">githubu</a>. K tomu je samozřejmě nejpříhodnější použít <code>git</code>. A jak nejlépe na to?</p>
+<p>V první řadě je potřeba mít nainstalovaný git. Majitelé maců to mají jednoduché, tam je většinou git hned v základu. Ostatní si nainstalují git buď pomocí <code>apt-get</code>, nebo <code>yum</code>.</p>
+<p>Nyní máte dvě možnosti. Už jste si napsali nějaký kód a chcete ho dát např. na github, nebo jste ještě nic nenapsali, ale chcete kód (který teprve napíšete) např. na github.</p>
+<p>V obou případěch si založte <a href="https://github.com/new">nový repozitář</a> např. na githubu.
+Před prním použitím gitu doporučuji několik nastavení, co ulehčí život.
+<code>git config --global user.name &quot;Jan Novák&quot;</code>
+<code>git config --global user.email jan.novak@gmail.com</code></p>
+<h3 id="mám-již-kód-chci-jej-publikovat">Mám již kód, chci jej publikovat</h3>
+<ul>
+<li>Nejdříve přejděte do adresáře package vaší aplikace.</li>
+<li>Proveďte <code>git init</code>. To vytvoří git repozitář v package vaší aplikace.</li>
+<li>Přidejte všechny soubory k správě pomocí gitu příkazem <code>git add .</code></li>
+<li>Potvrďte změny pomocí <code>git commit -m &quot;Můj první commit&quot;</code></li>
+<li>Přidejte si github jako vzdálený repozitář: <code>git remote add origin https://github.com/user/repo.git</code> (nahrďte <code>https://github.com/user/repo.git</code> za cestu k vašemu repozitáři)</li>
+<li>A publikujte změny příkazem <code>git push origin master</code>. Pokud pracujete jen s jedním vzdáleným repozitářem, pak <code>git push -u origin master</code> vám projekt vypublikuje a nastaví <code>origin master</code> jako hlavní repozitář.</li>
+</ul>
+<h3 id="nemám-kód-a-chci-jej-napsat-a-publikovat">Nemám kód a chci jej napsat a publikovat</h3>
+<ul>
+<li>Vytvořte si adresář <code>$GOPATH/src/github/user</code> např <code>mkdir -p $GOPATH/src/github/user</code>.</li>
+<li>Nyní proveďte <code>git clone https://github.com/user/projekt1.git</code>, kde <code>https://github.com/user/projekt1.git</code> je váš repozitář na githubu.</li>
+<li>Napište kostru vašeho programu.</li>
+<li>Potvrďte změny pomocí <code>git commit -m &quot;Můj první commit&quot;</code></li>
+<li>A pošlete kódu na github příkazem <code>git push</code>.</li>
+</ul>
+<p>Osobně doporučuji tyto dvě nastavení na úrovni projektu:<br>
+<code>git config pull.rebase true</code><br>
+<code>git config rebase.autoStash true</code><br>
+Tím se nastaví default při pull na rebase (více v <a href="https://git-scm.com/book/cs/v1/V%C4%9Btve-v-syst%C3%A9mu-Git-P%C5%99eskl%C3%A1d%C3%A1n%C3%AD">manuálu</a>)
+A také se před pull automaticky provede stash, tedy uloží lokální změny a znovu se aplikují po dokončení pull.</p>
+<p>Ale aby jsem naprosto nezazdil to hlavní, co by si měl odnést nováček v #Golang, co chce použít git:</p>
+<p><strong>Do gitu dávejte jen <code>$GOPATH/src/github.com/vase_jmeno/projekt</code>!</strong></p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

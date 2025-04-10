@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Jazyk #Go(lang)</title>
+    <link>https://go.ondralinek.cz/categories/</link>
+    <description>Recent content in Categories on Jazyk #Go(lang)</description>
+    <generator>Hugo</generator>
+    <language>cs-CZ</language>
+    <lastBuildDate>Mon, 17 Dec 2018 08:13:37 +0000</lastBuildDate>
+    <atom:link href="https://go.ondralinek.cz/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pokročilý</title>
+      <link>https://go.ondralinek.cz/categories/pokro%C4%8Dil%C3%BD/</link>
+      <pubDate>Mon, 17 Dec 2018 08:13:37 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/categories/pokro%C4%8Dil%C3%BD/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Oznámení</title>
+      <link>https://go.ondralinek.cz/categories/ozn%C3%A1men%C3%AD/</link>
+      <pubDate>Wed, 21 Nov 2018 05:06:03 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/categories/ozn%C3%A1men%C3%AD/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Začátky</title>
+      <link>https://go.ondralinek.cz/categories/za%C4%8D%C3%A1tky/</link>
+      <pubDate>Tue, 06 Nov 2018 06:23:00 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/categories/za%C4%8D%C3%A1tky/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Názory</title>
+      <link>https://go.ondralinek.cz/categories/n%C3%A1zory/</link>
+      <pubDate>Wed, 17 Oct 2018 13:11:00 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/categories/n%C3%A1zory/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Od Jinud</title>
+      <link>https://go.ondralinek.cz/categories/od-jinud/</link>
+      <pubDate>Fri, 09 Dec 2016 07:37:02 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/categories/od-jinud/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

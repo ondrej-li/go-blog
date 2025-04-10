@@ -1,0 +1,554 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Mage - nástroj pro sestavování (nejen) Go programů</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Mage - nástroj pro sestavování (nejen) Go programů</h1>
+<h4>Publikováno 12-13-2018 11:17:07</h4>
+
+<article>
+    <p>Sastavování (kompilace + linkování) v Go je jedna z věcí, kde vládne organizovaný chaos. Samozřejmě <code>go build</code> prostě funguje. Ale v dnešní době je potřeba dělat mnohem víc věcí, než prosté <code>go build</code>. Bohužel nějaký standardní způsob neexistuje. Jelikož jsem odkojený Un*xem, tak preferuji nástroje, které se samy nabízejí - <code>make</code>. Člověk si udělá <code>makefile</code> a je spokojený - jako <a href="https://github.com/defectus/glutton/blob/master/makefile">například tento</a>. Nevýhodou makefilů je, že ne všichni jim rozumí, a i ti, kdo jim rozumí, obecně neznají všechny finty. Ruku na srdce, kdo ví, co dělá na příklad toto <code>go fmt $$(go list ./... | grep -v /vendor/)</code>.</p>
+<p>Několik chytrých hlav si tedy sedlo a řeklo, že by bylo potřeba si udělat něco, co by více vyhovovalo porgramátorům v #Go. A tak vznikl <a href="https://magefile.org/">mage</a>. Je to nástroj na sestavování programů, který je ovšem vlastně #Go + doplňující knihovny. Spustí se jednoduše pomocí <code>mage</code> a když jde vše dobře, tak na konci je sestavený program. Nebo něco jiného, co chcete dělat.</p>
+<p>Nejdřív si tedy <code>mage</code> nainstalujeme.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go get -u -d github.com/magefile/mage<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>cd $GOPATH/src/github.com/magefile/mage<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>go run bootstrap.go
+</span></span></code></pre></div><p>Zkuste si teď na konzoli zadat <code>mage -version</code> a měli byste vidět smysluplný výstup.</p>
+<p>Nyní se ponořte do projektu, pro který byste rádi vytvořili <code>magefile</code> a zadejte <code>mage -init</code>. Po chvilce byste měli vidět v tomto adresáři <code>magefile.go</code>. Zajdet <code>mage -l</code> a měli byte vidět něco jako</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 816 89"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>T</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='16' y='20' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='16' y='36' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='16' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='16' y='68' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='24' y='20' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='24' y='36' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='24' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='24' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='32' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='32' y='36' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='32' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='32' y='68' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='40' y='20' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='40' y='36' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='40' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='40' y='68' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='48' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='48' y='36' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='48' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='48' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>:</text>
+<text text-anchor='middle' x='56' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='56' y='68' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='64' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='64' y='68' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='72' y='68' fill='currentColor' style='font-size:1em'>D</text>
+<text text-anchor='middle' x='80' y='68' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='88' y='68' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='96' y='68' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='136' y='20' fill='currentColor' style='font-size:1em'>A</text>
+<text text-anchor='middle' x='136' y='36' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='136' y='52' fill='currentColor' style='font-size:1em'>A</text>
+<text text-anchor='middle' x='136' y='68' fill='currentColor' style='font-size:1em'>M</text>
+<text text-anchor='middle' x='144' y='36' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='144' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='152' y='20' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='152' y='52' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='152' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='160' y='20' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='160' y='36' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='160' y='52' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='160' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='168' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='168' y='36' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='168' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='168' y='68' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='176' y='20' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='176' y='36' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='176' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='176' y='68' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='184' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='184' y='36' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='184' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='192' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='192' y='52' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='192' y='68' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='200' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='200' y='68' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='208' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='208' y='36' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='208' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='208' y='68' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='216' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='216' y='36' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='216' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='216' y='68' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='224' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='224' y='36' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='224' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='232' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='232' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='232' y='68' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='240' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='240' y='36' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='240' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='240' y='68' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='248' y='20' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='248' y='36' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='248' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='248' y='68' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='256' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='256' y='36' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='256' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='256' y='68' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='264' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='264' y='36' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='264' y='68' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='272' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='280' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='280' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='280' y='68' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='288' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='288' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='288' y='68' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='296' y='20' fill='currentColor' style='font-size:1em'>q</text>
+<text text-anchor='middle' x='296' y='52' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='304' y='20' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='304' y='68' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='312' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='312' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='312' y='68' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='320' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='320' y='52' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='320' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='328' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='328' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='336' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='336' y='52' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='336' y='68' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='344' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='344' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='352' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='352' y='52' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='352' y='68' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='360' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='368' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='368' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='368' y='68' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='376' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='376' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='376' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='384' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='384' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='384' y='68' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='392' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='392' y='52' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='392' y='68' fill='currentColor' style='font-size:1em'>k</text>
+<text text-anchor='middle' x='400' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='400' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='408' y='20' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='408' y='52' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='408' y='68' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='416' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='416' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='416' y='68' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='424' y='20' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='424' y='52' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='432' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='432' y='68' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='440' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='440' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='448' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='448' y='52' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='448' y='68' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='456' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='456' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='456' y='68' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='464' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='464' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='464' y='68' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='472' y='20' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='472' y='68' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='480' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='480' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='480' y='68' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='488' y='20' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='488' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='488' y='68' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='496' y='52' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='496' y='68' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='504' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='504' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='512' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='512' y='52' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='520' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='528' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='528' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='536' y='20' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='536' y='52' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='544' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='544' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='552' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='560' y='20' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='560' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='568' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='568' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='576' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='576' y='52' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='584' y='20' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='584' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='592' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='600' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='608' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='608' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='616' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='616' y='52' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='624' y='20' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='624' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='632' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='632' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='640' y='20' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='648' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='648' y='52' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='656' y='20' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='656' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='664' y='52' fill='currentColor' style='font-size:1em'>/</text>
+<text text-anchor='middle' x='672' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='672' y='52' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='680' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='680' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='688' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='688' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='696' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='704' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='720' y='20' fill='currentColor' style='font-size:1em'>f</text>
+<text text-anchor='middle' x='728' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='736' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='752' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='760' y='20' fill='currentColor' style='font-size:1em'>x</text>
+<text text-anchor='middle' x='768' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='776' y='20' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='784' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='792' y='20' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='800' y='20' fill='currentColor' style='font-size:1em'>e</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>Mage operuje s tím, co známe v <code>make</code> jako cíle - targets. Stejně jako v <code>make</code> i zde mohou cíle záviset na jiných cílech. Samotný cíl je vlastně <code>POGoF</code> - plain old #Go function. Tedy až na to, že musí mít signaturu <code>func Target() error</code>, <code>func Target()</code>, <code>func Target(context.Context) error</code>, <code>func Target(context.Context)</code>. <strong>Samotný magefile musí mít build tag <code>// +build mage</code></strong>.</p>
+<p>Pokud chceme, aby cíl závisel na jiném cíli, stačí jen přidat <code>mg.Deps(Target)</code> kde target je funkce jiného cíle. Samozřejmě je potřeba mít naimportovaný <code>import &quot;github.com/magefile/mage/mg&quot;</code>.</p>
+<p>Pokud už tedy znáte základy <code>mage</code> není problém si ukázat, jak se v <code>mage</code> dělají běžné úkony.</p>
+<h3 id="kompilace-go">Kompilace Go</h3>
+<p>Toto je podle celkem realistický target <code>Build</code>. Tedy dobrý startovací blok, který nejen sestaví appku, ale dá jí i trochu fazónu. Jen pozor</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/magefile/mage/sh&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;unicode&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;golang.org/x/text/transform&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;golang.org/x/text/unicode/norm&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ldflags</span> = <span style="color:#e6db74">&#34;-s -w -X main.AUTHOR=${AUTHOR} -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} -X main.BRANCH=${BRANCH} -X main.TAG=${TAG} -X main.BUILDTIME=${BUILDTIME}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">goexe</span>=<span style="color:#e6db74">&#34;go&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagEnv</span>() <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">hash</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#e6db74">&#34;git&#34;</span>, <span style="color:#e6db74">&#34;rev-parse&#34;</span>, <span style="color:#e6db74">&#34;--short&#34;</span>, <span style="color:#e6db74">&#34;HEAD&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">branch</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#e6db74">&#34;git&#34;</span>, <span style="color:#e6db74">&#34;rev-parse&#34;</span>, <span style="color:#e6db74">&#34;--abbrev-ref&#34;</span>, <span style="color:#e6db74">&#34;HEAD&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">author</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#e6db74">&#34;git&#34;</span>, <span style="color:#e6db74">&#34;log&#34;</span>, <span style="color:#e6db74">&#34;-1&#34;</span>, <span style="color:#e6db74">&#34;--pretty=format:&#39;%an&#39;&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">version</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#e6db74">&#34;git&#34;</span>, <span style="color:#e6db74">&#34;describe&#34;</span>, <span style="color:#e6db74">&#34;--tags&#34;</span>, <span style="color:#e6db74">&#34;--abbrev=0&#34;</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Goarch</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Goos</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;linux&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;COMMIT&#34;</span>:      <span style="color:#a6e22e">normalizeString</span>(<span style="color:#a6e22e">hash</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;BRANCH&#34;</span>:      <span style="color:#a6e22e">normalizeString</span>(<span style="color:#a6e22e">branch</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;AUTHOR&#34;</span>:      <span style="color:#a6e22e">normalizeString</span>(<span style="color:#a6e22e">author</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;VERSION&#34;</span>:     <span style="color:#a6e22e">normalizeString</span>(<span style="color:#a6e22e">version</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;BUILDTIME&#34;</span>:   <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02T15:04:05Z0700&#34;</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;GOARCH&#34;</span>:      <span style="color:#a6e22e">Goarch</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;GOOS&#34;</span>:        <span style="color:#a6e22e">Goos</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;CGO_ENABLED&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isMn</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">rune</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">unicode</span>.<span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">unicode</span>.<span style="color:#a6e22e">Mn</span>, <span style="color:#a6e22e">r</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">normalizeString</span>(<span style="color:#a6e22e">input</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">transform</span>.<span style="color:#a6e22e">Chain</span>(<span style="color:#a6e22e">norm</span>.<span style="color:#a6e22e">NFD</span>, <span style="color:#a6e22e">transform</span>.<span style="color:#a6e22e">RemoveFunc</span>(<span style="color:#a6e22e">isMn</span>), <span style="color:#a6e22e">norm</span>.<span style="color:#a6e22e">NFC</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">transform</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">input</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span> = <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Replace</span>(<span style="color:#a6e22e">result</span>, <span style="color:#e6db74">&#34; &#34;</span>, <span style="color:#e6db74">&#34;_&#34;</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Build</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">RunWith</span>(<span style="color:#a6e22e">flagEnv</span>(), <span style="color:#a6e22e">goexe</span>, <span style="color:#e6db74">&#34;build&#34;</span>, <span style="color:#e6db74">&#34;-ldflags&#34;</span>, <span style="color:#a6e22e">ldflags</span>, <span style="color:#e6db74">&#34;-o&#34;</span>, <span style="color:#e6db74">&#34;nazev_appky&#34;</span>, <span style="color:#e6db74">&#34;github.com/organizace/projekt/cmd/profil&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="fmt-projektu">Fmt projektu</h3>
+<p>Každý správný projekt by měl mít všechny soubory správně formátované. Skript na to vypadá komplikovaně, ale věřím, že po chvilce to celé začne dávat smysl :-)</p>
+<p>Hlavní část je &ldquo;šumu&rdquo; je vlastně jen listování souborů, které se mají poslat <code>gofmt</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// importy si doplňte sami :-)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// vrací cesty package pro daný projekt jako slice řetězců</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">packages</span>() ([]<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkgsInit</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">s</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#a6e22e">goexe</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;./...&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pkgs</span> = <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">s</span>, <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">pkgs</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">pkgs</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">pkgs</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">pkgPrefixLen</span>:]
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pkgs</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// true pokud je go ve verzi 1.11 (kvůli `go mod`)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isGoLatest</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">Version</span>(), <span style="color:#e6db74">&#34;1.11&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Run gofmt linter</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Fmt</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">isGoLatest</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkgs</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">packages</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">failed</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">first</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">pkg</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">pkgs</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">files</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Glob</span>(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">pkg</span>, <span style="color:#e6db74">&#34;*.go&#34;</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">f</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">files</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">s</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Output</span>(<span style="color:#e6db74">&#34;gofmt&#34;</span>, <span style="color:#e6db74">&#34;-l&#34;</span>, <span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;ERROR: running gofmt on %q: %v\n&#34;</span>, <span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">failed</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">first</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The following files are not gofmt&#39;ed:&#34;</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">first</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">failed</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">failed</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;improperly formatted go files&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="testování">Testování</h3>
+<p>Bez toho to prostě nejde. Následující cíl (target) vám spustí testy a vypočítá nad nimi i pokrytí (coverage). Samozřejme <code>race</code> přepínač je nastavený (bez toho fakt nejde :-))</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/magefile/mage/sh&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">buildTags</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">envtags</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;VASE_APPKA_TAGY&#34;</span>); <span style="color:#a6e22e">envtags</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">envtags</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;none&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Run tests with race detector</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestRace</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">goexe</span>, <span style="color:#e6db74">&#34;test&#34;</span>, <span style="color:#e6db74">&#34;-race&#34;</span>, <span style="color:#e6db74">&#34;-coverprofile=coverage.txt&#34;</span>, <span style="color:#e6db74">&#34;-covermode=atomic&#34;</span>, <span style="color:#e6db74">&#34;-v&#34;</span>, <span style="color:#e6db74">&#34;-tags&#34;</span>, <span style="color:#a6e22e">buildTags</span>(), <span style="color:#e6db74">&#34;./...&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="vet">Vet</h3>
+<p>Mnohdy jde kód zkompilovat, ale jsou v něm skryté chyby, nesmysly apod. se kterými by prohram neměl opustit dveře vačí programátorské dílny (brlohu). <code>go vet</code> je najde a nahlásí. A vrátí chybu, pokud tomu tak je (z vlastní zkušenosti - 99% toho co najde prostě potřebuje opravit).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/magefile/mage/sh&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//  Run go vet linter</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Vet</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">goexe</span>, <span style="color:#e6db74">&#34;vet&#34;</span>, <span style="color:#e6db74">&#34;./...&#34;</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;error running go vet: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="lint">Lint</h3>
+<p>Pokud nechcete použít <code>go vet</code> nebo chcete najít i další chyby a nesrovnalosti, můžete použít i jiné lintery. Zde je příklad <code>golint</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/magefile/mage/sh&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Run golint linter</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Lint</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// tato funkce je ukázána ve `Fmt`</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">pkgs</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">packages</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">failed</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">pkg</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">pkgs</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stderr</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#e6db74">&#34;golint&#34;</span>, <span style="color:#a6e22e">pkg</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;ERROR: running go lint on %q: %v\n&#34;</span>, <span style="color:#a6e22e">pkg</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">failed</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">failed</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;errors running golint&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="bonus">Bonus</h3>
+<p>Jako bonus je ukázka jak porovnáním času modifikace můžete zjistit, jestli se vůbec něco změnilo a tudíž jestli je potřeba něco delat.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/magefile/mage/target&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isBuildNeeded</span>() (<span style="color:#66d9ef">bool</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;nazev_exace&#34;</span>, <span style="color:#e6db74">&#34;pkg&#34;</span>, <span style="color:#e6db74">&#34;cmd&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Formats, Lints, Tests and Builds the application.</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Build</span>() <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">needed</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">isBuildNeeded</span>(); !<span style="color:#a6e22e">needed</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Build not required.&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To je pro dnešek všechno, hodně zdaru při sestavování vašich aplikací. Na úplný závěr jeden můj <a href="https://github.com/defectus/glutton/blob/master/magefile.go">magefile.go</a>.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

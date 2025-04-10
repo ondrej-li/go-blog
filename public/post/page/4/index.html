@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Posts</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+
+<div class="articles-list">
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/golang-a-pristup-k-databazi/">#Golang a přístup k databázi</a> - 2016-09-27 05:31:55</h3>
+        <p>V dnešní době nad neexistuje aplikace, která by nepřistupovala do databáze. Samozřejmě si můžeme ukládat data do souboru a mnohdy je to i efektivnější řešení, ale databáze nám luxusně umožní data ukládat a načítat a nestarat se přitom o detaily. V dnešní době rozdělujeme databáze do 2 proudů.</p>
+<ul>
+<li>SQL databáze (nebo také relační databáze) - tedy databáze, kde jsou data ukládána jako relace mezi entitami. Většina z nich také garantuje ACID (atomičnost operací, konzistenci stav, integritu dat a durabilitu uložení). Mezi nejznámější patři <a href="https://www.mysql.com/">MySql</a>, <a href="https://www.postgresql.org/">PostgreSQL</a>, <a href="https://www.oracle.com/database/index.html">Oracle</a>, MS SQL Server atd.</li>
+<li>NoSQL databáze - tedy databáze, které nevyžadují  striktní schéma (ad hoc ukládání dat) místo ACID používají <a href="https://en.wikipedia.org/wiki/Eventual_consistency">BASE</a> (pouze základní dostupnost, měnící se (měkký) stav a eventuální konzistenci) - což samo osobě je slovní hříčka - prostě kyselost a zásaditost :-). Představily jsou <a href="https://www.mongodb.com/">MongoDB</a>, <a href="http://redis.io/">Redis</a>, <a href="http://cassandra.apache.org/">Apache Cassandra</a>, <a href="https://www.elastic.co/products/elasticsearch">ElesticSearch</a> apod.</li>
+</ul>
+<p>Dnes si povíme, jak přistupovat k SQL databázím. Už proto, že <em>Go</em> tyto databáze standardizuje, na rozdíl od NoSQL, kde standard není.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/testujeme-v-golang-cast-2/">Testujeme v #Golang (část 2)</a> - 2016-09-24 11:56:57</h3>
+        <p>V první části povídání o testování jsme si ukázali vcelku jednoduchý test a spustili jsme si jej.</p>
+<p>Jedním z požadavků na testování je, aby testy doběhly co nejdříve. Je to proto, že chceme mít smyčku zpětné vazby co nejkratší. Nikdo nestojí o to, aby čekal více jak minutu na informaci, že je všechno v pořádku. Ale pak se naskytuje otázka - co v případě, že test závisí na něčem pomalém. Třeba databázi. Nebo volání externí služby přes HTTP. V tom případě tu máme celou plejádu možností a podíváme se na ně.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/testujeme-v-golang-cast-1/">Testujeme v #Golang (část 1)</a> - 2016-09-21 06:08:12</h3>
+        <p>Testování pro mnoho lidí (včetně mě) není nic zábavného, ale po letech programování připouštím, že je lehčí mít pořádné testy, než neustále kompilovat a spouštět aplikaci a pomocí debuggeru se snažit pochopit, co je špatně. Už ta ztráta času. I když je <em>Go</em> hodně rychlé, kompilace pořád představuje pár vteřin, následně spustit aplikaci, dostat na místo, kde si chcete něco ověřit a následně konečně to ověřit. Mnohdy to vyžaduje např. zásahy do databáze, otevírání browseru a navigace na stránky apod. Prostě a jednoduše, je to  neefektivní. A hlavně, jsme programátoři, automatizujeme co se dá!</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/kompilace-golang-v-dockeru/">Kompilace #Golang v Dockeru</a> - 2016-09-17 09:07:31</h3>
+        <p>Tentokrát kratší vsuvka.</p>
+<p>Potřeboval jsem na svém  Macovi zkompilovat program pro 🐧 Linux. Samozřejmě mě jako první napadl cross compiler, ale to není ono. Nehledě na to, že bych pak stejně nemohl program vyzkoušet. Samozřejmě by s trochou cviku šlo zkusit nějaký VirtualBox apod., ale mě napadlo elegantnější řešení - <a href="https://www.docker.com">Docker</a>!</p>
+<p>Nejdřív si nainstalujete na počítač docker - podívejte se na <a href="https://www.docker.com/products/overview">instalační stránky</a> a vyberte si instalaci podle svého systému. V ideálním případě by toto mělo fungovat:</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/konfigurace-programu-v-golang/">Konfigurace programu v #Golang</a> - 2016-09-14 17:33:13</h3>
+        <p>Dnes si povíme něco o tom, jak si nakonfigurovat takový program v <em>Go</em>.</p>
+<p>Konfigurací zde myslím způsob, jak předat programu parametry, aby mohl běžet nezávisle. V zásadě máte několik možností a pojďme si o nich povědět detailněji.</p>
+<ol>
+<li>parametry příkazové řádky</li>
+<li>pomocí proměnných prostředí</li>
+<li>databáze</li>
+<li>specializované programy</li>
+</ol>
+<p>Tento výčet není konečný, ale prozatím si s ním vystačíme.</p>
+<h3 id="příkazová-řádka">Příkazová řádka</h3>
+<p>Podívejme se na první možnost, parametry na příkazové řádce.</p>
+<p>Pro tento případ má <em>Go</em> package <code>flags</code>. Možná už jste si sami všimli, že na rozdíl od jazyků odvozených od <em>C</em> (<em>C</em>, <em>C++</em>, <em>Java</em> apod.) tu funkce <code>main</code> nepřijímá pole parametrů. Pro připomenutí, takto vypadá <code>main</code> v <em>Go</em>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/golang-a-git/">#Golang a Git</a> - 2016-09-12 19:02:00</h3>
+        <p>Čas od času budete potřebovat svoje dílo uložit někam jinam, než na svůj počítač. Mnozí budou dokonce pomýšlet na sdílení svého kódu s ostatními např. na <a href="www.github.com">githubu</a>. K tomu je samozřejmě nejpříhodnější použít <code>git</code>. A jak nejlépe na to?</p>
+<p>V první řadě je potřeba mít nainstalovaný git. Majitelé maců to mají jednoduché, tam je většinou git hned v základu. Ostatní si nainstalují git buď pomocí <code>apt-get</code>, nebo <code>yum</code>.</p>
+<p>Nyní máte dvě možnosti. Už jste si napsali nějaký kód a chcete ho dát např. na github, nebo jste ještě nic nenapsali, ale chcete kód (který teprve napíšete) např. na github.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/struktura-programu-po-druhe/">Struktura programu po druhé</a> - 2016-09-07 20:34:34</h3>
+        <p>Jak se říká, žádný člověk není ostrov, tak ani žádný program není ostrov. Programy závisí na knihovnách jazyka a na dalších knihovnách. <em>Go</em> řeší tedy dva problémy. Jak závislost získat a jak závislost použít.</p>
+<p>Aby mohlo <em>Go</em> závislost získat, musí vědět, kde se závislost nachází. A k tomu slouží právě posledně zmiňované jméno package. Pokud máme např. package <code>github.com/stretchr/testify</code>, tak je naprosto zřejmé, že ji můžeme stáhnout z <a href="https://github.com/stretchr/testify">githubu</a>. <em>Go</em> nám v tom ale rádo pomůže. Stačí jen říct <code>go get github.com/stretchr/testify</code> a závislost je v našem <code>GOPATH</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/vyvoj-v-golang/">Vývoj v #Golang</a> - 2016-09-07 17:38:37</h3>
+        <p>Jelikož už známe syntaxi jazyka a umíme napsat např. <code>Hello world</code>, tak nastává čas si říct něco o tom, jak si nakonfigurovat prostředí, abychom mohli pracovat s <em>Go</em>.</p>
+<p>Instalace je jednoduchá. Pokud jste na Macovi, pak doporučuji použít <code>homebrew</code>, i když si můžete stáhnout instalačky. Linux je podobný, <code>yum</code> nebo <code>apt</code> vám zajisté pomohou. Co se Windows týče, tam bohužel sloužit nemohu, ale na vlastní oči jsem viděl <em>Go</em> běžet na Windows, tak to určitě půjde.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/naucte-se-go-za-y-minut/">Naučte se Go za Y minut</a> - 2016-09-06 05:57:06</h3>
+        <p>Jazyk Go byl vytvořen, jelikož bylo potřeba dokončit práci. Není to poslední
+trend ve světě počítačové vědy, ale je to nejrychlejší a nejnovější způsob,
+jak řešit realné problémy.</p>
+<p>Go používá známé koncepty imperativních jazyků se statickým typováním.
+Rychle se kompiluje a také rychle běží. Přidává snadno pochopitelnou
+podporu konkurenčnosti, což umožňuje využít výhody multi-core procesorů a
+jazyk také obsahuje utility, které pomáhají se škálovatelným programováním.</p>
+<p>Go má již v základu vynikající knihovnu a je s ním spojená nadšená komunita.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/proc-jazyk-go/">Proč jazyk Go</a> - 2016-08-30 20:50:18</h3>
+        <p>Než si povíme, proč programovat v <em>Go</em> a ne třeba v <em>Java</em>, tak odkaz na informace o jazyku <em>Go</em> na <a href="https://cs.wikipedia.org/wiki/Go_(programovac%C3%AD_jazyk)">wikipedia</a>.</p>
+<p>Po této trošce suché teorie něco praxe. Programovací jazyky se dělí do několika skupin. V rámci nich <em>Go</em> zapadá do těchto:</p>
+<ul>
+<li>kompilovaný - programy v <em>Go</em> se musí před během kompilovat, na rozdíl od jazyků typu <em>JavaScript</em>, nebo <em>Python</em></li>
+<li>nativní - programy v <em>Go</em> se kompilují do nativního kódu. Programy tedy nepotřebují běhové prostředí, jako např. <em>Java</em> (ta má JVM), nebo <em>.net</em> (ten má .net framework)</li>
+<li>silně typovaný - program psaný v <em>Go</em> může použít pouze typy známé v době kompilace. To je rozdíl proti např. <em>JavaScript</em>, kde jsou typy známi až v době spuštění.</li>
+<li>strukturální - typy nemusí uvádět, s jakým typem jsou kompatibilní. Třeba <em>Java</em> jakožto nominální jazyk toto musí uvádět (<code>class b extends a</code>)</li>
+<li>funkcionální - v <em>Go</em> jsou funkce občany první kategorie. Funkce mohou přijímat funkce jako parametr a také je vracet. Toto např. <em>Java</em> do verze 8 neuměla.</li>
+</ul>
+<p>Když tedy víme, co je <em>Go</em> zač, tak důvody proč si zvolit <em>Go</em>:</p>
+    </article>
+    
+</div>
+
+    <ul class="pagination pagination-default">
+      <li class="page-item">
+        <a href="/post/" aria-label="First" class="page-link" role="button"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/3/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/post/" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 4" class="page-link" role="button">4</a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/5/" aria-label="Page 5" class="page-link" role="button">5</a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/5/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/post/page/5/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

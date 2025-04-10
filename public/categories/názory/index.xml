@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Názory on Jazyk #Go(lang)</title>
+    <link>https://go.ondralinek.cz/categories/n%C3%A1zory/</link>
+    <description>Recent content in Názory on Jazyk #Go(lang)</description>
+    <generator>Hugo</generator>
+    <language>cs-CZ</language>
+    <lastBuildDate>Wed, 17 Oct 2018 13:11:00 +0000</lastBuildDate>
+    <atom:link href="https://go.ondralinek.cz/categories/n%C3%A1zory/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mini služby</title>
+      <link>https://go.ondralinek.cz/post/mini-service/</link>
+      <pubDate>Wed, 17 Oct 2018 13:11:00 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/mini-service/</guid>
+      <description>&lt;p&gt;Píšety monolity? Pak možná máte jeden problém, ale za to velký.&lt;/p&gt;&#xA;&lt;p&gt;Píšete micro-servicy? Pak možná máte mnoho problémů, ale menších.&lt;/p&gt;&#xA;&lt;p&gt;Co takhle psát miniservicy? To byste měli trochu běžných problémů. Prostě zlatá střední cesta.&lt;/p&gt;&#xA;&lt;p&gt;Co je to miniservice. Je to něco většího než mikroservice, má řekněme 10-20 endpointů, popř. stejný počet gRPC, či jiných endpointů. Zachovává si tedy určité rysy microservice, ale přitom se z ní nestává monolit. Správa farmy miniservice je tedy přeci jen jednodušší, přitom když jedna spadne, je možné ji rychle nahodit a nespadne kvůli tomu zbytek služeb.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Smutný den pro #Go</title>
+      <link>https://go.ondralinek.cz/post/smutny-den/</link>
+      <pubDate>Wed, 10 Oct 2018 12:50:00 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/smutny-den/</guid>
+      <description>&lt;p&gt;Nebojte, #Go nekončí, ba naopak, bohužel už je tak velké, že se objevují vykukové, co svojí &amp;ldquo;chytrostí&amp;rdquo; odrovnají kdejaký jazyk, nebo technologii.&lt;/p&gt;&#xA;&lt;p&gt;O čem mluvím. Tento článek na blogu #Go &lt;a href=&#34;https://blog.golang.com/wire&#34;&gt;https://blog.golang.com/wire&lt;/a&gt; propaguje výhody DI (dependency injection). Ano, 20 let stará technologie, která spolehlivě odbourala Javu, a teď přichází ke #Go.&lt;/p&gt;&#xA;&lt;p&gt;Rozhodně se nejedná o první pokus, nebo nápad tohoto typu. Řekl bych, že snad každý člověk přicházející ke #Go z Javy dostane tento nápad, ale tentokrát je to poprvé, co se to dostalo na tak prominentní místo.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Generics v Golang</title>
+      <link>https://go.ondralinek.cz/post/generics-v-golang/</link>
+      <pubDate>Wed, 21 Jun 2017 12:59:02 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/generics-v-golang/</guid>
+      <description>&lt;p&gt;Poslední dobou je možné sledovat na poli jazyka &lt;em&gt;Go&lt;/em&gt; zajímavou bitvu. Jak se blíží Go verze &lt;code&gt;2.0&lt;/code&gt; (a pozor, po &lt;code&gt;1.9&lt;/code&gt; může klidně přijít &lt;code&gt;1.10&lt;/code&gt;), tak se začínají objevovat nápady typu &amp;ldquo;přidejme do jazyka generické typy&amp;rdquo;. Nejdřív jsem i já stál na generické straně barikády, ale musím uznat, že postupem času se spíš kloním ke skupině genericsů méně, nebo třeba vůbec ne. Možná bych chtěl na toto téma rozvířit debatu, takže zde je můj pohled na věc.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

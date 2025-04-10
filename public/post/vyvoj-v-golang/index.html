@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Vývoj v #Golang</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Vývoj v #Golang</h1>
+<h4>Publikováno 09-07-2016 17:38:37</h4>
+
+<article>
+    <p>Jelikož už známe syntaxi jazyka a umíme napsat např. <code>Hello world</code>, tak nastává čas si říct něco o tom, jak si nakonfigurovat prostředí, abychom mohli pracovat s <em>Go</em>.</p>
+<p>Instalace je jednoduchá. Pokud jste na Macovi, pak doporučuji použít <code>homebrew</code>, i když si můžete stáhnout instalačky. Linux je podobný, <code>yum</code> nebo <code>apt</code> vám zajisté pomohou. Co se Windows týče, tam bohužel sloužit nemohu, ale na vlastní oči jsem viděl <em>Go</em> běžet na Windows, tak to určitě půjde.</p>
+<p>Po instalaci si zadejte v shellu <code>go version</code>, abyste si ověřili, že</p>
+<p>a) Go vám funguje
+b) máte nainstalovanou verzi, kterou chcete</p>
+<p>Následně zkuste <code>go env</code>, což vypíše informace o vašem prostředí. Mezi všemi možnými věcmi jsou nejdůležitější dvě proměnné.</p>
+<ul>
+<li><code>GOROOT</code> - ta ukazuje na adresář, kde je <em>Go</em> nainstalováno</li>
+<li><code>GOPATH</code> - ta ukazuje na místo, kde leží vaše projekty.</li>
+</ul>
+<p>A tím se plynule dostáváme k projektům a struktuře kódu, jako takového.</p>
+<p>Když jsem říkal, že <code>GOPATH</code> ukazuje na místo, kde leží vaše projekty, tak nebyl překlep. Je to opravdu místo, kde běžně leží ==všechny== vaše projekty v <em>Go</em>. <code>GOPATH</code> si nastavíte sami, nejlépe v <code>.bash_profile</code>. Když budete u toho, tak si rovnou nastavte <code>PATH</code> na <code>$PATH:$GOPATH/bin</code>. Třeba v mém <code>.bash_profile</code> je:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>export GOPATH<span style="color:#f92672">=</span>/personal/go
+</span></span><span style="display:flex;"><span>export PATH<span style="color:#f92672">=</span>$PATH:$GOPATH/bin
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>S takto upraveným profilem se můžete pustit do prvního projektu. A hned se naskýtá otázka - v čem editovat. Takže, pro opravdové programátory tu máme <code>vim</code>, <code>emacs</code>, <code>notepad</code> apod. Pro produktivní programátory, co mají 2000Kč, tu máme <a href="https://www.jetbrains.com/idea/">IntelliJ Idea</a> s pluginem <a href="https://plugins.jetbrains.com/plugin/5047">Go</a>. Pro produktivní programátory, co neradi utrácí, tu máme <a href="http://www.eclipse.org/">Eclipse</a> opět s pluginem pro <a href="https://marketplace.eclipse.org/content/goclipse">Go</a>. Pro milovníky <code>vim</code> (včetně mně), je tu <a href="https://github.com/fatih/vim-go">vim-go</a>.</p>
+<p>Nyní si konečně můžeme začít nový projekt. První krok, je potřeba si udělat novou package, tedy domeček, pro váš projekt. Pokud plánujete mít vaši aplikaci např. na githubu, bitbucketu a pod, tak vřele doporučuji nazývat package jménem vašeho projektu. Tedy např. <code>github.com/lojza/prvni_projekt</code>. <em>Go</em> podporuje UTF-8 a je dobré toho využít, ale názvy souborů a packagí jsou výjimka. Tam se držte malých písmen a pište cestinou. Abyste si takovou package vytvořili, tak stačí zadat</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p $GOPATH/src/github.com/lojza/prvni_projekt
+</span></span><span style="display:flex;"><span>cd $GOPATH/src/github.com/lojza/prvni_projekt
+</span></span></code></pre></div><p>Teď když máte package si můžete vytvořit svůj první zdrojový soubor. Nazvěme ho <code>main.go</code> a může vypadat třeba takhle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span> () {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Prinln</span> (<span style="color:#e6db74">&#34;Ahoj Lojzo&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>A teď když jste stále v adresáři <code>$GOPATH/src/github.com/lojza/prvni_projekt</code>, zadejte <code>go install</code>. Pokud šlo vše hladce, tak by se nemělo nic vypsat, ale zkuste zadat <code>ls -al $GOPATH/bin</code> a měli byste vidět, kromě jiného i <code>prvni_projekt</code>, jako spustitelný soubor. A jelikož je <code>$GOPATH/bin</code> na vaší <code>PATH</code> (pamatujete - nastavili jsme tak <code>.bash_profile</code>), tak stačí zadat</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>prvni_projekt
+</span></span></code></pre></div><p>a vypíše se</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sputnik:prvni_projekt defectus$ prvni_projekt
+</span></span><span style="display:flex;"><span>Ahoj Lojzo
+</span></span></code></pre></div><p>Adresářová struktura by měla vypadat následovně
+<img src="/content/images/2016/09/prvni_projekt.png" alt=""></p>
+<p>PS: jako bonus uvedu, ještě než si o tom povíme v samostatné kapitole, že pokud použijete ve vašem projektu odkaz na jinou knihovnu (třeba naprosto nepostradatelnou <code>github.com/stretchr/testify/assert</code>), tak stačí jen zadat <code>go get ./...</code> a Go za vás postahuje všechny závislosti. Prostě nádhera :-)</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Oznámení on Jazyk #Go(lang)</title>
+    <link>https://go.ondralinek.cz/tags/ozn%C3%A1men%C3%AD/</link>
+    <description>Recent content in Oznámení on Jazyk #Go(lang)</description>
+    <generator>Hugo</generator>
+    <language>cs-CZ</language>
+    <lastBuildDate>Wed, 21 Nov 2018 05:06:03 +0000</lastBuildDate>
+    <atom:link href="https://go.ondralinek.cz/tags/ozn%C3%A1men%C3%AD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Seriál o Go na root.cz</title>
+      <link>https://go.ondralinek.cz/post/serial-o-go/</link>
+      <pubDate>Wed, 21 Nov 2018 05:06:03 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/serial-o-go/</guid>
+      <description>&lt;p&gt;Včera začal vycházet velmi slibný seriál o #Go na &lt;a href=&#34;https://www.root.cz/clanky/go-minimalisticky-a-prekvapive-vykonny-programovaci-jazyk/&#34;&gt;root.cz&lt;/a&gt; od Pavla Tišnovského.&lt;/p&gt;&#xA;&lt;p&gt;Vřele doporučuji!&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>1.9.3</title>
+      <link>https://go.ondralinek.cz/post/1-9-3/</link>
+      <pubDate>Tue, 23 Jan 2018 13:06:03 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/1-9-3/</guid>
+      <description>&lt;p&gt;Dnes byly vydána nová verze Go 1.9.3. Jedná se pouze o opravy celkem nepodstatných chyb, ale nikdy není na škodu upgradovat.&lt;/p&gt;&#xA;&lt;p&gt;Jako vždy stačí stáhnout z &lt;a href=&#34;https://golang.org/dl/&#34;&gt;https://golang.org/dl/&lt;/a&gt;, nebo počkat, až se &lt;em&gt;Go&lt;/em&gt; objeví v repu vaší oblíbené distribuce.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

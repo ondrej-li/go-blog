@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Od Jinud on Jazyk #Go(lang)</title>
+    <link>https://go.ondralinek.cz/tags/od-jinud/</link>
+    <description>Recent content in Od Jinud on Jazyk #Go(lang)</description>
+    <generator>Hugo</generator>
+    <language>cs-CZ</language>
+    <lastBuildDate>Fri, 09 Dec 2016 07:37:02 +0000</lastBuildDate>
+    <atom:link href="https://go.ondralinek.cz/tags/od-jinud/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Porovnání jazyků založených na C</title>
+      <link>https://go.ondralinek.cz/post/porovnani-jazyku-zalozenych-na-c/</link>
+      <pubDate>Fri, 09 Dec 2016 07:37:02 +0000</pubDate>
+      <guid>https://go.ondralinek.cz/post/porovnani-jazyku-zalozenych-na-c/</guid>
+      <description>&lt;p&gt;Na serveru &lt;a href=&#34;https://eev.ee/blog/2016/12/01/lets-stop-copying-c/&#34;&gt;eev.ee&lt;/a&gt; vyšel zajímavý článek na téma programovacích jazyků. Všímá si především &amp;ldquo;dědictví&amp;rdquo;, které si jazyky odnáší od svého prapředka &lt;em&gt;C&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Řekl bych, že &lt;em&gt;Go&lt;/em&gt; si vede velmi dobře. Samozřejmě že není ideální, což je dané také tím, že jazyk lze hodnotit pouze subjektivně, ale vlastnosti jako vícenásobné návratové hodnoty, &lt;code&gt;switch&lt;/code&gt; bez &lt;code&gt;break&lt;/code&gt; apod. autora zaujali. Posuďte sami!&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

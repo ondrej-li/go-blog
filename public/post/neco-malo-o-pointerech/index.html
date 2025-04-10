@@ -1,0 +1,409 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Něco málo o pointerech</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Něco málo o pointerech</h1>
+<h4>Publikováno 11-07-2016 16:36:40</h4>
+
+<article>
+    <p>Dnes jsem si uvědomil jednu věc. V <em>Go</em> se to množí pointery, ale vlastně mnozí čtenáři tohoto blogu, kteří přicházejí ke <em>Go</em> ze světa JavaScriptu, Javy a dalších jazyků bez pointerů (v Česku známé také jako ukazatele), mohou být mírně zmatení, o čem to tu stále hovořím.</p>
+<p>Než se pustím do dalších příkladů, tak jen ve zkratce pro znalce <em>C</em> a podobných jazyků, které pointery mají. V <em>Go</em> se vždy přenášejí parametry hodnotou. A to včetně hodnoty pointerů. Rozumíme si :-)</p>
+<p>Tak a teď přímo k věci. Co je to pointer. Pointer je číslo. Číslo a typ. Jaké číslo? <code>Int64</code>. Je to ukazatel na místo v paměti, kde leží data proměnné daného typu. Ukažme si kus kódu.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">číslo</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">pointerNaČíslo</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">číslo</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">nilPointerNaČíslo</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>, <span style="color:#a6e22e">číslo</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">pointerNaČíslo</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">nilPointerNaČíslo</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>První věc, program při běhu spadne. Ale to je v pořádku. Druhá věc. Pointery v akci. Program spadne, jelikož se snažíme číst z adresy paměti <code>0</code>, což je na 99.9999% mimo rozsah nám vyhrazený. <code>číslo</code> je místo v paměti, kde je hodnota <code>1</code>.</p>
+<p>Paměť počítače je přístupná pomocí adres. Začínáme na adrese <code>0x0</code> a končíme na maximální adrese, buď podle operačního systému a jeho správce paměti (memory management), nebo na hranici opravdové, fyzické paměti. Abychom si mohli do paměti něco uložit a následně vybrat, potřebujeme říct, kam toto cosi ukládáme a odkud chceme toto cosi číst. Kdykoliv deklarujeme proměnnou, tak kompilátor vytvoří pro danou proměnnou místo v paměti. A jelikož kompilátor ví, jak je proměnná velká (tedy kolik bytů paměti zabírá), tak ví, na jakou adresu může zapsat další proměnnou. A této znalosti kde proměnná sídlí se říká ukazatel.</p>
+<p>Vezměme si příklad. Chci sečíst dvě proměnné. Jak bude vypadat skutečný kód vykonaný procesorem? Bude to něco na tento způsob.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">C</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">B</span>
+</span></span></code></pre></div><p>v pseudo-assembleru (jazyku procesoru)</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 360 73"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='0' y='20' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='0' y='36' fill='currentColor' style='font-size:1em'>k</text>
+<text text-anchor='middle' x='0' y='52' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='8' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='8' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>č</text>
+<text text-anchor='middle' x='16' y='20' fill='currentColor' style='font-size:1em'>č</text>
+<text text-anchor='middle' x='16' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='16' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='24' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='24' y='36' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='24' y='52' fill='currentColor' style='font-size:1em'>ž</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='32' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='32' y='36' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='40' y='36' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='40' y='52' fill='currentColor' style='font-size:1em'>v</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='48' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='48' y='36' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='48' y='52' fill='currentColor' style='font-size:1em'>ý</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='56' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='56' y='36' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='56' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='64' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='64' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='64' y='52' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='72' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='72' y='36' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='72' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='80' y='52' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>z</text>
+<text text-anchor='middle' x='88' y='20' fill='currentColor' style='font-size:1em'>z</text>
+<text text-anchor='middle' x='88' y='36' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='88' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='96' y='52' fill='currentColor' style='font-size:1em'>k</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='104' y='20' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='104' y='36' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='112' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='112' y='36' fill='currentColor' style='font-size:1em'>ř</text>
+<text text-anchor='middle' x='112' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='120' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='120' y='36' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='120' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='128' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='128' y='36' fill='currentColor' style='font-size:1em'>č</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='136' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='136' y='36' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='136' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='144' y='20' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='144' y='36' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='144' y='52' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='152' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='160' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='160' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='160' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='168' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='168' y='36' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='168' y='52' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='176' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='176' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='176' y='36' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='176' y='52' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='184' y='20' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='184' y='36' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='192' y='4' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='192' y='20' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='192' y='36' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='192' y='52' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>ě</text>
+<text text-anchor='middle' x='200' y='20' fill='currentColor' style='font-size:1em'>ě</text>
+<text text-anchor='middle' x='200' y='36' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='200' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='208' y='20' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='208' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='208' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>é</text>
+<text text-anchor='middle' x='216' y='20' fill='currentColor' style='font-size:1em'>é</text>
+<text text-anchor='middle' x='216' y='52' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='224' y='36' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='224' y='52' fill='currentColor' style='font-size:1em'>ě</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>A</text>
+<text text-anchor='middle' x='232' y='20' fill='currentColor' style='font-size:1em'>B</text>
+<text text-anchor='middle' x='232' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='240' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='248' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='248' y='20' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='248' y='52' fill='currentColor' style='font-size:1em'>é</text>
+<text text-anchor='middle' x='256' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='256' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='264' y='52' fill='currentColor' style='font-size:1em'>C</text>
+<text text-anchor='middle' x='272' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='272' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='280' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='280' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='288' y='4' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='288' y='20' fill='currentColor' style='font-size:1em'>g</text>
+<text text-anchor='middle' x='296' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='296' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='304' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='304' y='20' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='312' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='312' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='320' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='320' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='328' y='4' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='328' y='20' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='344' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='344' y='20' fill='currentColor' style='font-size:1em'>2</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>v assembleru pak</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 160 73"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>M</text>
+<text text-anchor='middle' x='0' y='20' fill='currentColor' style='font-size:1em'>M</text>
+<text text-anchor='middle' x='0' y='36' fill='currentColor' style='font-size:1em'>A</text>
+<text text-anchor='middle' x='0' y='52' fill='currentColor' style='font-size:1em'>M</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>O</text>
+<text text-anchor='middle' x='8' y='20' fill='currentColor' style='font-size:1em'>O</text>
+<text text-anchor='middle' x='8' y='36' fill='currentColor' style='font-size:1em'>D</text>
+<text text-anchor='middle' x='8' y='52' fill='currentColor' style='font-size:1em'>O</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>V</text>
+<text text-anchor='middle' x='16' y='20' fill='currentColor' style='font-size:1em'>V</text>
+<text text-anchor='middle' x='16' y='36' fill='currentColor' style='font-size:1em'>D</text>
+<text text-anchor='middle' x='16' y='52' fill='currentColor' style='font-size:1em'>V</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='32' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='32' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='32' y='52' fill='currentColor' style='font-size:1em'>[</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='40' y='20' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='40' y='36' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='40' y='52' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>x</text>
+<text text-anchor='middle' x='48' y='20' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='48' y='36' fill='currentColor' style='font-size:1em'>x</text>
+<text text-anchor='middle' x='48' y='52' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='56' y='20' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='56' y='36' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='56' y='52' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='64' y='52' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>[</text>
+<text text-anchor='middle' x='72' y='20' fill='currentColor' style='font-size:1em'>[</text>
+<text text-anchor='middle' x='72' y='36' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='72' y='52' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='80' y='20' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='80' y='36' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='80' y='52' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='88' y='20' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='88' y='36' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='88' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='96' y='20' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='96' y='52' fill='currentColor' style='font-size:1em'>C</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='104' y='20' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='104' y='52' fill='currentColor' style='font-size:1em'>]</text>
+<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='112' y='20' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='112' y='52' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='120' y='20' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='128' y='20' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='128' y='52' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>A</text>
+<text text-anchor='middle' x='136' y='20' fill='currentColor' style='font-size:1em'>B</text>
+<text text-anchor='middle' x='136' y='52' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>]</text>
+<text text-anchor='middle' x='144' y='20' fill='currentColor' style='font-size:1em'>]</text>
+<text text-anchor='middle' x='144' y='52' fill='currentColor' style='font-size:1em'>x</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>A proč tedy vlastně pracujeme s pointery? Vždyť podle tohoto nic jiného než pointery nejsou. To proto, že proměnné se v <em>Go</em> přenášejí hodnotou. Co to znamená? Znamená to, že když zavoláte jakoukoliv funkci, tak parametry se do ní překopírují. To znamená, že parametr ve volané funkci je kopií parametru z volající funkce. To s sebou nese dvě implikace.</p>
+<ol>
+<li>spotřebu paměti. U čísla se to snese, ale u větších objektů je to problém (texty, obrázky, řádky databáze apod.). Každý datový objekt je potřeba kompletně klonovat a po výstupu z funkce zase odstranit, což vede i k fragmentaci paměti.</li>
+<li>Mnohdy potřebujeme, aby byl výsledek volání viditelný i ve volající funkci, chceme, aby byl postranní účinek viditelný i pro ostatní, aniž bychom museli používat výsledek.</li>
+</ol>
+<p>V tom případě použijeme pointery na typ. Zdůrazňuji <strong>na typ</strong>. Bez toho by kompilátor netušil, jak se má chovat k cílové datové struktuře. Ukažme si na postranních účincích, jaký je rozdíl mezi ukazateli a hodnotami.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;před voláním: %d.\n&#34;</span>, <span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">pomocíHodnoty</span>(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;pomocí hodnoty: %d.\n&#34;</span>, <span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pomocíPointerů</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;pomocí pointeru: %d.\n&#34;</span>, <span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">pomocíPointerů</span>(<span style="color:#a6e22e">pointerNaInt</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">pointerNaInt</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">pomocíHodnoty</span>(<span style="color:#a6e22e">hodnota</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">hodnota</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Jak vidíte, i když jsme ve funkci <code>pomocíHodnoty</code> měnili hodnotu <code>a</code>, tato změna nebyla navenek patrná. Pokud jsme to samé udělali pomocí pointeru, tak byla změna patrná i ve volající funkci.</p>
+<p>V tomto osobně vidím výhodu <em>Go</em> proti jiným jazykům. Zde si můžeme říct, jak chceme hodnotu přenést a nést s tím spojená rizika.</p>
+<p>Na rozdíl od <em>C</em> zde ovšem chybí pointerová aritmetika. Pointer je možné získat, ale není možné jej měnit (zatím jsem nemluvili od <code>unsafe</code>, že ano :-)).</p>
+<p>Na tomto místě bych rád požádal, pokud máte s ukazateli problémy, tak mi napište. Je pro mě těžké odhadnout, jak složité je pochopit jejich vnitřnosti.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

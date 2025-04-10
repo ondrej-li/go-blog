@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Struktura programu 2 roky po té</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Struktura programu 2 roky po té</h1>
+<h4>Publikováno 11-06-2018 06:23:00</h4>
+
+<article>
+    <p>Jsou to již více než dva roky, co jsem se v tomto <a href="post/struktura-programu-po-druhe/">článku</a> rozepsal nad strukturou programu v #Go. A jelikož s časem rostou zkušenosti myslím, že je čas popsat, co se od té doby změnilo a jak strukturuju programy teď.</p>
+<p>V první řadě nám #Go podporuje moduly, tedy od verze 1.11. Takže když začnu nový projekt, okamžitě dělám <code>go mod init</code>. Moduly ovšem nelze použít na <code>$GOPATH</code>, takže je potřeba se jí vyhnout. Ovšem nic vám nebrání pracovat jako dříve, být na <code>$GOPATH</code> a používat na správu závislostí něco jiného - třeba <code>dep</code>.</p>
+<p>V rootu projektu jako takového nemám žádné zdrojové kódy. Je tam ale <code>README.md</code>, <code>makefile</code> (popř. jiný buildovací skript), <code>CONTRIBUTING.md</code> a licence. Mimochodem licence je zásadní dokument už proto, že žijeme v právním státě. Pokud by snad chtěl někdo váš projekt použít, upravit apod. tak se bez něj neobejdete. Pokud nepotřebujete jinak doporučuji svobodnou licenci, jejich seznam najdete na <a href="https://www.gnu.org/licenses/license-list.html">na stránkách FSF</a>.</p>
+<p>Při návrhu rozmístění souborů po adresářích se zkuste vžít do pozice člověka, který se jde na váš program podívat a nemá šajn, jak jsou zdrojové kódy organizované. Adresáře by měly být jasně pojmenované, třeba místo kde uchováváte dockerfily by se měl jmenovat <code>docker</code>, <code>dockerfiles</code> apod. To samé pro balíčkovací systémy, dokumentaci apod.</p>
+<p>Samotný #Go kód je dobré dát do dvou hlavních adresářů.</p>
+<ul>
+<li>
+<p><code>cmd</code> - tam umístnit všechen kód, který produkuje spustitelné soubory. I když bude jen jeden, tak doporučuji udělat adresář, se jménem spustitelného souboru. Např. <code>/cmd/super_appka/main.go</code>.</p>
+</li>
+<li>
+<p><code>pkg</code> - tady umístnit soubory, které jsou v zásadě &ldquo;knihovnou&rdquo; dané aplikace. Tedy věci, které samy o sobě nejsou aplikací, ale které poskytují služby, bez nichž by vaše aplikace nefungovala. Jistou výhodou je, že se pak opradu tyto soubory tváři jako knihovna vaší aplikace. Už když je importujete, tak import vypadá jako <code>import &quot;github.com/moje_organizace/super_appka/pkg/super_kalkulacka&quot;</code>. Stále se osobně vyhýbám vytvářené velkého množství package - je to čistě pragmatická volba - nechci skončit jako #Java a mít stovky package adresářů ve více jak 3 úrovních.</p>
+</li>
+</ul>
+<p>Pokud už použijete buildovací nástroj, pak opět doporučuji nazývat jednotlivé akce rozumě - např. <code>make all</code>, <code>make test</code>, <code>make deploy</code>.</p>
+<p>Pokud chcete vidět projekt, který je podle mě celkem slušným musterem tak zkuste datadog agenta: <a href="https://github.com/DataDog/datadog-agent">https://github.com/DataDog/datadog-agent</a>.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

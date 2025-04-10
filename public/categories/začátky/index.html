@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Začátky</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+
+<div class="articles-list">
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a> - 2018-11-06 06:23:00</h3>
+        <p>Jsou to již více než dva roky, co jsem se v tomto <a href="post/struktura-programu-po-druhe/">článku</a> rozepsal nad strukturou programu v #Go. A jelikož s časem rostou zkušenosti myslím, že je čas popsat, co se od té doby změnilo a jak strukturuju programy teď.</p>
+<p>V první řadě nám #Go podporuje moduly, tedy od verze 1.11. Takže když začnu nový projekt, okamžitě dělám <code>go mod init</code>. Moduly ovšem nelze použít na <code>$GOPATH</code>, takže je potřeba se jí vyhnout. Ovšem nic vám nebrání pracovat jako dříve, být na <code>$GOPATH</code> a používat na správu závislostí něco jiného - třeba <code>dep</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a> - 2017-11-11 06:52:47</h3>
+        <p>Jelikož stále nejsem schopný dát dohromady návod na šifrování v Go (skončil jsem u nástřelu, ale nedaří se mi ho dokončit), tak se posunu na další kapitolu a tou je váš/náš vercajk při práci s Go.</p>
+<p>Každý jazyk má svoji sadu nářadí (tooling) se kterou se pracuje. Například Java. Pokud chci pracovat v Javě, tak je skoro jisté, že jako IDE použiji Ideu, nebo Eclipse, programy budu sestavovat pomocí mavenu, nebo gradlu, testovat budu např. JUnit, nejspíš se vykašlu na všechny možný experimenty a použiji Spring na všechno. Co je ale hlavní, máte relativně velký výběr a nic vás nebrání zkoušet jiné nástroje a postupy.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/duck-typing-v-go/">Duck typing v #GO</a> - 2017-01-25 15:36:16</h3>
+        <p>Možná už jste někdy slyšeli termín &ldquo;<code>duck typing</code>&rdquo;. Pro ty co náhodou ne, tak jen krátce uvedu, že se jedná o aplikaci známého pořekadla &ldquo;kváká to jako kachna, vypadá to jako kachna, tak je to kachna&rdquo;.</p>
+<p>Představte si tyto dva typy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Člověk</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Jméno</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Mazlíček</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Jméno</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Je jasné, že se jedné o dva typy. <code>Člověk</code> a <code>Mazlíček</code>. Oba jsou ovšem stejné - mají (sice jen jedno) pole - <code>Jméno</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/jak-na-cannot-read-property-substring-of-undefined-ve-vs-code/">Jak na `Cannot read property &#39;substring&#39; of undefined` ve VS Code</a> - 2017-01-10 10:38:06</h3>
+        <p>Pokud jako já používáte <a href="https://code.visualstudio.com/">Visual Studio Code</a> pro práci s projekty v <em>Go</em> tak jsme možná narazili na problém při formátování zdrojových souborů (standardně <code>cmd + alt + L</code> na MacOs). Místo vytouženého zformátování se zobrazí</p>
+<p><code>Cannot read property 'substring' of undefined</code></p>
+<p>Nuže problém je v chybějící prázdné řádce na konci souboru. Stačí tedy jen přidat na konec souboru jednu prázdnou řádku a problém je vyřešen.</p>
+<p>Např.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span> () {
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>.
+</span></span><span style="display:flex;"><span>} <span style="color:#75715e">// následuje prázdná řádka</span>
+</span></span></code></pre></div><p>Více na <a href="https://github.com/Microsoft/vscode-go/issues/690">Githubu</a>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/dnesni-bleskovka-sady-mnoziny-v-golang/">Dnešní bleskovka - sady (množiny) v Golang</a> - 2017-01-10 08:48:24</h3>
+        <p>Dnes opět jen telegraficky. <em>Go</em> nepodporuje sady (množiny) a tak tu máme drobnou obezličku, jak si takovou sadu vytvořit. Využijeme toho, že mapy mají unikátní klíče a jsou netříděné. Že to zní povědomě? Ano! Vždyť to je přece množina.</p>
+<p>Takže než abychom si mazali ruce nějakým bastlením kódu si uděláme např. toto:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">int</span>]<span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">2</span>] = <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">3</span>] = <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">4</span>] = <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// jen si mapu prosvištíme, ať víme co v ní je</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">množinaIntů</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Položka množiny:&#34;</span>, <span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// zjištění jestli množina obsahuje položku</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">množinaIntů</span>[<span style="color:#ae81ff">1</span>]; <span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Množina obsahuje položku 1.&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Padl tu dotaz, proč je použit typ <code>map[int]struct{}</code>. Tedy mapu s klíčem <code>int</code> a položkami typu prázdná struktura. Důvod je prostý, prázdná struktura zabírá (logicky) v paměti 0 bajtů.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/if-else-if-else-v-go/">if-else-if-else v #Go</a> - 2016-11-02 08:37:54</h3>
+        <p>Ve většině jazyků z rodiny <em>C</em> se větvění provádí pomocí <code>if-else</code>. Klasicky to funguje (např. v <em>Go</em>) takto.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">cosi</span> &gt; <span style="color:#a6e22e">dalsiCosi</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;cosi je větší než dalsiCosi.&#34;</span>)
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;cos je menší než dalsiCosi.&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Takto to funguje dobře. Co když ale chceme naspat něco většího?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">cosi</span> &gt; <span style="color:#a6e22e">dalsiCosi</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Weekday</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Monday</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Je pondělí a cosi je větší než dalsiCosi.&#34;</span>)
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">cosi</span> &gt; <span style="color:#a6e22e">dalsiCosi</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Weekday</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tuesday</span>  {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Je úterý a cosi je větší než dalsiCosi.&#34;</span>)   
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Není pondělí a úterý, nebo cosi je menší než dalsiCosi, nebo tak něco v tom smyslu.&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><em>Go</em> ovšem nabízí tuto variantu namísto sestavy <code>if-else-if-else</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/pracujeme-s-poli/">Pracujeme s poli</a> - 2016-10-17 11:27:00</h3>
+        <p>Práce s poli patří k základům prakticky všeho. Pokud mám něčeho více jak jedna, tak se z toho stává pole.
+Běžně rozlišujeme tři typy polí:</p>
+<ul>
+<li>obyčejné pole. V <em>Go</em> se deklaruje jako <code>[n]T</code> např.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>   <span style="color:#a6e22e">pole</span> <span style="color:#f92672">:=</span> [<span style="color:#ae81ff">10</span>]<span style="color:#66d9ef">int</span>
+</span></span></code></pre></div><p>Všimněte si, že <code>pole</code> je typu <code>[10]int</code>. Tzn. velikost pole se nedá změnit. Pokud tedy předem víte, kolik
+prvků potřebujete a nechcete aby se to dalo změnit, pak je pole právě pro vás.</p>
+<ul>
+<li>seznam. V <em>Go</em> se mu říká <code>slice</code>. Deklaruje se jako <code>[]T</code> např. <code>[]int</code>. Pokud chcete, můžete si u něj nastavit jeho
+počáteční kapacitu. Ovšem nikoliv při deklaraci, ale při inicializaci. Tedy např.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>   <span style="color:#a6e22e">seznam</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">10</span>) <span style="color:#75715e">// počáteční velikost pole je 10</span>
+</span></span></code></pre></div><ul>
+<li>množina. Mnoho jazyků přímo podporuje množiny, anlicky <code>set</code>. <em>Go</em> mezi takové jazyky nepatří, a tak musíte vzít za vděk
+nějakou knihovnou , která tuto funkcionalitu nabízí. Jen pro přesnost, množiny nejsou setříděné a neumožňují duplikáty.</li>
+</ul>
+<p>Teď nejběžnějši operace nad poli, nebo slicy. Prvně si pole vytvoříme.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/bleskovka-o-ukazatelych-na-interface/">Bleskovka o ukazatelých na interface</a> - 2016-09-30 11:00:50</h3>
+        <p>Dnes si dáme první bleskovou zprávu.</p>
+<p>### Nepoužívejte v kódu ukazatel (pointer) na interface.</p>
+<p><strong>Důvod.</strong></p>
+<p>Jakákoliv struktura, která implementuje interface, jej implementuje jak jako samotná struktura, tak jako ukazatel na strukturu.</p>
+<p>Jen si musíte dát pozor na <code>příjemce</code> (receivery). Pokud příjemce předpokládá ukazatel (pointer), tak musíte volat daný příjemce na ukazateli. V následujícím příkladu je vidět, jak příjemce implementuje funkci <code>Funkce</code> na ukazateli a tím pádem je potřeba použít k jeho volání <code>iface1 = &amp;Secti{}</code>. Tedy dereferencovat ukazatel na strukturu <code>Secti</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/golang-a-pristup-k-databazi/">#Golang a přístup k databázi</a> - 2016-09-27 05:31:55</h3>
+        <p>V dnešní době nad neexistuje aplikace, která by nepřistupovala do databáze. Samozřejmě si můžeme ukládat data do souboru a mnohdy je to i efektivnější řešení, ale databáze nám luxusně umožní data ukládat a načítat a nestarat se přitom o detaily. V dnešní době rozdělujeme databáze do 2 proudů.</p>
+<ul>
+<li>SQL databáze (nebo také relační databáze) - tedy databáze, kde jsou data ukládána jako relace mezi entitami. Většina z nich také garantuje ACID (atomičnost operací, konzistenci stav, integritu dat a durabilitu uložení). Mezi nejznámější patři <a href="https://www.mysql.com/">MySql</a>, <a href="https://www.postgresql.org/">PostgreSQL</a>, <a href="https://www.oracle.com/database/index.html">Oracle</a>, MS SQL Server atd.</li>
+<li>NoSQL databáze - tedy databáze, které nevyžadují  striktní schéma (ad hoc ukládání dat) místo ACID používají <a href="https://en.wikipedia.org/wiki/Eventual_consistency">BASE</a> (pouze základní dostupnost, měnící se (měkký) stav a eventuální konzistenci) - což samo osobě je slovní hříčka - prostě kyselost a zásaditost :-). Představily jsou <a href="https://www.mongodb.com/">MongoDB</a>, <a href="http://redis.io/">Redis</a>, <a href="http://cassandra.apache.org/">Apache Cassandra</a>, <a href="https://www.elastic.co/products/elasticsearch">ElesticSearch</a> apod.</li>
+</ul>
+<p>Dnes si povíme, jak přistupovat k SQL databázím. Už proto, že <em>Go</em> tyto databáze standardizuje, na rozdíl od NoSQL, kde standard není.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/konfigurace-programu-v-golang/">Konfigurace programu v #Golang</a> - 2016-09-14 17:33:13</h3>
+        <p>Dnes si povíme něco o tom, jak si nakonfigurovat takový program v <em>Go</em>.</p>
+<p>Konfigurací zde myslím způsob, jak předat programu parametry, aby mohl běžet nezávisle. V zásadě máte několik možností a pojďme si o nich povědět detailněji.</p>
+<ol>
+<li>parametry příkazové řádky</li>
+<li>pomocí proměnných prostředí</li>
+<li>databáze</li>
+<li>specializované programy</li>
+</ol>
+<p>Tento výčet není konečný, ale prozatím si s ním vystačíme.</p>
+<h3 id="příkazová-řádka">Příkazová řádka</h3>
+<p>Podívejme se na první možnost, parametry na příkazové řádce.</p>
+<p>Pro tento případ má <em>Go</em> package <code>flags</code>. Možná už jste si sami všimli, že na rozdíl od jazyků odvozených od <em>C</em> (<em>C</em>, <em>C++</em>, <em>Java</em> apod.) tu funkce <code>main</code> nepřijímá pole parametrů. Pro připomenutí, takto vypadá <code>main</code> v <em>Go</em>.</p>
+    </article>
+    
+</div>
+
+    <ul class="pagination pagination-default">
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/categories/za%C4%8D%C3%A1tky/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/categories/za%C4%8D%C3%A1tky/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/categories/za%C4%8D%C3%A1tky/page/2/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

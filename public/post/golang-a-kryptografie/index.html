@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Golang a kryptografie</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Golang a kryptografie</h1>
+<h4>Publikováno 07-18-2017 17:47:50</h4>
+
+<article>
+    <p>Dnes si povíme něco o tom, jak funguje kryptografie v Go. Go jako (relativně) nový programovací je v této oblasti daleko a podporuje prakticky všechny možné šifry a řešení. Co je ale na osvěžující je fakt, že Go se stále snaží dělat věci jednoduše, takže na rozdíl od jiných nejmenovaných jazyků se zde nesetkáme s milionem interfaců a object factory.</p>
+<p>Kryptografie je opravdu obsáhlý prostor, takže my si ukážeme použitelné a praktické implementace kryptografie.</p>
+<p>Jelikož již umíme nakonfigurovat naši aplikaci, aby používala HTTPS, tak přeskočíme tuto fázi a ukážeme si, jak vytvoříme certifikát, a jak ověříme, že protistrana nám dala platný certifikát.</p>
+<p>V druhé části si zase ukážeme, jak podepsat zprávu a jak ověřit, že zpráva je platná.</p>
+<h2 id="certifikáty-a-jejich-ověření">Certifikáty a jejich ověření</h2>
+<p>Certifikáty jsou všude. Stejně jako v reálném životě i v počítačové kryptografie je certifikát doklad, kde někdo certifikuje něco. U nás je tím někdo certifikační autorita a něco tzv. certifikační subjekt. Příkladem subjektu může být identita serveru, člověka, čehokoliv, co jsme schopni zabalit do X509 subject řádky. Samozřejmě je možné použít i pole z <code>X509v3 extensions</code> a tím dále specifikovat detaily certifikátu a certifikačního subjektu.</p>
+<p>Pokud chceme podepsat certifikát, tak potřebujeme dvě věci - certifikační autoritu a tzv. certificate signing request (žádost o podepsání certifikátu). Aby věc nebyla jednoduchá, tak i certifikační autorita potřebuje certifikát. Takže je to tak trochu Hlava 22. Naštěstí je tu možnost použít tzv. self-signed certificate, tedy certifikát podepsaný sám sebou. Takový certifikát obecně nemá valnou cenu (je to jako byste vy řekli, že jste důvěryhodný - sobě věřit můžete, ale jak přesvědčíte ostatní, aby vám to věřili?), ale důvěra někde začít musí.</p>
+<p>V Go si takový certifikát vytvoříte velmi jednoduše. Ale nejdřív, jak to tak bývá, je potřeba <a href="https://en.wiktionary.org/wiki/yak_shaving">oholit jaka</a> a to v podobě tvorby asymetrických šifrovacích klíč. V asymetrické kryptografii existuje vždy pár šifrovacích klíčů - veřejný a soukromý. Veřejný klíč můžete volně distribuovat po světě, zatímco soukromý klíč by měl za každých okolností zůstat tajný. Věc se má tak, že pomocí veřejného klíče jste schopni data zašifrovat, ale odšifrovat je může jen vlastník soukromého klíče.</p>
+<p><strong>Obecně tedy platí, že když dám entitě svůj veřejný klíč, ona jím zašifruje zprávu a já jsme následně schopný tuto zprávu svým soukromým klíčem rozšifrovat a vrátit oné entitě v čitelné formě, tak prokazuji, že jsem opravdu vlastníkem soukromého klíče k tomuto veřejnému klíči.</strong></p>
+<p>Funguje to i obráceně. Zašifrujete zprávu pomocí soukromého klíče a necháte druhou stranu tuto zprávu rozšifrovat pomocí veřejného klíče. Tímto způsobem se &ldquo;podepisujete&rdquo; a dokazujete, že jste to vy. Radši upozorňuji - takováto zpráva není bezpečně zašifrovaná - veřejný klíč může mít kdokoliv, pokud chcete bezpečně přenést zprávu, tak šifrujte veřejným klíčem.</p>
+<p>Takže prvně tvorba klíčů. Použijeme moderní metodu <a href="https://cs.wikipedia.org/wiki/Kryptografie_nad_eliptick%C3%BDmi_k%C5%99ivkami">eliptických křivek</a>, která vyžaduje kratší klíče než zastaralejší (ale stále bezpečná) <a href="https://cs.wikipedia.org/wiki/RSA">metoda RSA</a>. Radši znovu opakuji, při vhodné volbě délky klíče (RSA 2048bit a ECC 256bit) se jedná o <strong>metodu neprolomitelnou se současnými výpočetními metodami</strong>. Pro zajímavost, nejdelší prolomená ECC byla 109bit a 300 počítačů ji počítalo 3 měsíce.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">privateKey</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ecdsa</span>.<span style="color:#a6e22e">GenerateKey</span>(<span style="color:#a6e22e">elliptic</span>.<span style="color:#a6e22e">P256</span>(), <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>)
+</span></span></code></pre></div><p>S tímto klíčem pak můžeme sestavit certifikát a nechat si jej podepsat - tedy podepsat sám sebou. Podepsání certifikátu je proces, kdy certifikační autorita vypočítá <a href="https://cs.wikipedia.org/wiki/Ha%C5%A1ovac%C3%AD_funkce">hash</a> certifikátu zakóduje jej svým privátním klíčem. Ověření pak spočívá v tom, že vezmete onen hash a rozkódujete jej veřejným klíčem certifikační autority. Tím ověříte, že podpis je autentický. Kromě toho si uděláte hash celého certifikátu a musí být stejný jako hash deklarovaný (zakódovaný) certifikační autoritou - tím ověříte, že certifikát nikdo neupravil.</p>
+<p>Nejdřív se tedy uděláme &ldquo;kostru&rdquo; certifikátu, tedy všechny data pro výsledný certifikát.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">serialNumberLimit</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">big</span>.<span style="color:#a6e22e">Int</span>).<span style="color:#a6e22e">Lsh</span>(<span style="color:#a6e22e">big</span>.<span style="color:#a6e22e">NewInt</span>(<span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">128</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">serialNumber</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Int</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">serialNumberLimit</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">template</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">Certificate</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SerialNumber</span>: <span style="color:#a6e22e">serialNumber</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Subject</span>: <span style="color:#a6e22e">pkix</span>.<span style="color:#a6e22e">Name</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">CommonName</span>: <span style="color:#e6db74">&#34;Our CA&#34;</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">NotBefore</span>:             <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>(),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">NotAfter</span>:              <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">365</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">KeyUsage</span>:              <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">KeyUsageKeyEncipherment</span> | <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">KeyUsageDigitalSignature</span> | <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">KeyUsageCertSign</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ExtKeyUsage</span>:           []<span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ExtKeyUsage</span>{<span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ExtKeyUsageServerAuth</span>},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">BasicConstraintsValid</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">IsCA</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>Certifikát je tedy platný jeden rok (což je dost málo na kořenový certifikát, o hierarchii certifikátů si možná povíme dále) a má náhodné sériové číslo. To by mělo být unikátní, i když se to v praxi dá velmi těžko ověřit. A teď přijde to nejlepší - podepíšeme si tento certifikát sami sebou.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">derBytes</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">CreateCertificate</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">template</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">template</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">privateKey</span>.<span style="color:#a6e22e">PublicKey</span>, <span style="color:#a6e22e">privateKey</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">caCert</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ParseCertificate</span>(<span style="color:#a6e22e">derBytes</span>)
+</span></span></code></pre></div><p>Výsledkem je <a href="https://cs.wikipedia.org/wiki/Basic_Encoding_Rules#K.C3.B3dov.C3.A1n.C3.AD_DER">DER</a> kódovaný certifikát, který si hned převedeme zpátky na strukturu certifikátu. Vzhledem k tomu, že certifikáty si předáváme většinou jako PEM kódované soubory, což je vlastně DER jako BASE64 zabalený mezi &ldquo;BEGIN CERTIFICATE&rdquo; a &ldquo;END CERTIFICATE&rdquo; tak si náš certifikát převedeme na PEM a můžeme ho klidně poslat do světa.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">pemBlock</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">Block</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Type</span>:  <span style="color:#e6db74">&#34;CERTIFICATE&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Bytes</span>: <span style="color:#a6e22e">caCert</span>.<span style="color:#a6e22e">Raw</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pemBytes</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">EncodeToMemory</span>(<span style="color:#a6e22e">pemBlock</span>)
+</span></span></code></pre></div><p>Rekapitulace - máme ECC privátní klíč naší certifikační autority a její certifikát. Tedy vše, co potřebujeme, pokud chceme mít možnost vydávat svoje vlastní certifikáty.</p>
+<p>Bystří z vás se již ptají, co pak může následovat. Stejným způsobem můžeme vydávat další certifikáty, stačí jen vyměnit čtvrtý parametr volání <code>CreateCertificate</code> za podepsaný certifikát (<code>caCert</code>) a vše je vyřešeno. Popravdě, v praxi si neposíláme nepodepsané certifikáty. V praxi se posílají žádosti o podpis certifikátu. Ten obsahuje všechny pole certifikátu kromě podpisu. A takový CSR si vytvoříme snadno. Opět potřebujeme privátní klíč, ale to je asi tak vše.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">privateKey</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ecdsa</span>.<span style="color:#a6e22e">GenerateKey</span>(<span style="color:#a6e22e">elliptic</span>.<span style="color:#a6e22e">P256</span>(), <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">template</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">CertificateRequest</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Subject</span>: <span style="color:#a6e22e">pkix</span>.<span style="color:#a6e22e">Name</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">CommonName</span>: <span style="color:#e6db74">&#34;unique identifier&#34;</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SignatureAlgorithm</span>: <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ECDSAWithSHA512</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">PublicKey</span>:          <span style="color:#a6e22e">privateKey</span>.<span style="color:#a6e22e">PublicKey</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">csrBytes</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">CreateCertificateRequest</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">template</span>, <span style="color:#a6e22e">privateKey</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">derBytes</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">CreateCertificateRequest</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">template</span>, <span style="color:#a6e22e">keyBytes</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pemBlock</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">Block</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Type</span>:  <span style="color:#e6db74">&#34;CERTIFICATE REQUEST&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Bytes</span>: <span style="color:#a6e22e">derBytes</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pemBytes</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">EncodeToMemory</span>(<span style="color:#a6e22e">pemBlock</span>)
+</span></span></code></pre></div><p>Jakmile máme požadavek na certifikát tak není problém si jej dát podepsat. Překopírujeme si hodnoty z CSR do kostry certifikátu a podepíšeme privátním klíčem certifikační autority.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">template</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">Certificate</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Subject</span>:               <span style="color:#a6e22e">csr</span>.<span style="color:#a6e22e">Subject</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SerialNumber</span>:          <span style="color:#a6e22e">big</span>.<span style="color:#a6e22e">NewInt</span>(<span style="color:#a6e22e">random</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">random</span>.<span style="color:#a6e22e">NewSource</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())).<span style="color:#a6e22e">Int63</span>()),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">NotBefore</span>:             <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span> <span style="color:#f92672">*</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">24</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">NotAfter</span>:              <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#ae81ff">365</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">KeyUsage</span>:              <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">KeyUsageKeyEncipherment</span> | <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">KeyUsageDigitalSignature</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ExtKeyUsage</span>:           []<span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ExtKeyUsage</span>{<span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ExtKeyUsageClientAuth</span>, <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ExtKeyUsageServerAuth</span>},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">BasicConstraintsValid</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">IsCA</span>:               <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">PublicKey</span>:          <span style="color:#a6e22e">csr</span>.<span style="color:#a6e22e">PublicKey</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SignatureAlgorithm</span>: <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ECDSAWithSHA512</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">derBytes</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">CreateCertificate</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">template</span>, <span style="color:#a6e22e">caCert</span>, <span style="color:#a6e22e">csr</span>.<span style="color:#a6e22e">PublicKey</span>, <span style="color:#a6e22e">privateKey</span>)
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">clientCert</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ParseCertificate</span>(<span style="color:#a6e22e">derBytes</span>)
+</span></span></code></pre></div><p>Pokud chcete, můžete si certifikát převést do PEM podoby pomocí <code>pem.EncodeToMemory</code>, jak bylo již ukázáno výše.</p>
+<p>Posledním krokem je ověření certifikátu. Jak jste si již přečetli, certifikát se ověří tak, že se vezme jeho podpis spolu s veřejným klíčem certifikační autority a podpis se zkontroluje. Je dobré si také ověřit časovou platnost certifkátu (<code>notBefore</code>/<code>notAfter</code>). <em>Go</em> má v sobě přímo zabudovanou podporu ověřování certifikátů, takže se nám ověření smrskne na jednu řádku:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">caCert</span>.<span style="color:#a6e22e">CheckSignatureFrom</span>(<span style="color:#a6e22e">clientCert</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;certifikát není vydaný naší certifikační autoritou&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Samozřejmě můžeme ověřovat mnohem detailněji. Na to slouží metoda <code>Verify</code>. Sama o sobě funguje bez problému, jen v našem případě bychom museli vytvořit nový pool kořenových autorit, jelikož naše autorita není uvedena v systémovém poolu. Ovšem nic nám nebrání ji přidat do systémového pool důvěryhodných certifikátů. Výhodou metody <code>Verify</code> je, že testuje i časovou platnost, platnost domény atd.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">caCert</span>, <span style="color:#a6e22e">clientCert</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">Certificate</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">Certificate</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pool</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">NewCertPool</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">AddCert</span>(<span style="color:#a6e22e">caCert</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opts</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">VerifyOptions</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Roots</span>: <span style="color:#a6e22e">pool</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">clientCert</span>.<span style="color:#a6e22e">Verify</span>(<span style="color:#a6e22e">opts</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;certifikát není platný %+v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Tolik zatím k tvorbě certifikátů. V dalším článku si ukážeme, jak si podepíšeme zprávu pomocí soukromého klíče a jak na druhé straně ověříme platnost této zprávy. Tedy to co děláme při ověřování platnosti certifikátu. Stejně tak si ukážeme obrácený postup. Zakódujeme zprávu veřejným klíčem a rozšifrujeme soukromým klíčem.</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ondralinek-cz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+

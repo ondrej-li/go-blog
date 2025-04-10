@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Ondřej Linek">
+
+<meta name="description" content="">
+
+<title>Pokročilý</title>
+<meta name="generator" content="Hugo 0.146.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="https://go.ondralinek.cz//css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="https://go.ondralinek.cz/">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Jazyk #Go(lang) - Nejnovější příspěvky</h3>
+        <ul>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/serial-o-go/">Seriál o Go na root.cz</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/struktura-programu-2-roky-po-te/">Struktura programu 2 roky po té</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/mini-service/">Mini služby</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/smutny-den/">Smutný den pro #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/1-9-3/">1.9.3</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/go-vercajk/">Go vercajk</a></li>
+            
+            <li><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a></li>
+            
+        </ul>
+    </div>
+
+    
+    <div id="tags" class="open">
+        <h3 data-open="tags">Tagy</h3>
+        <ul class="tags">
+            
+            <li><a href="/tags/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/tags/od-jinud">od jinud</a></li>
+            
+            <li><a href="/tags/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/tags/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/tags/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+
+    
+    <div id="categories" class="open">
+        <h3 data-open="categories">Kategorie</h3>
+        <ul class="categories">
+            
+            <li><a href="/categories/n%C3%A1zory">názory</a></li>
+            
+            <li><a href="/categories/od-jinud">od jinud</a></li>
+            
+            <li><a href="/categories/ozn%C3%A1men%C3%AD">oznámení</a></li>
+            
+            <li><a href="/categories/pokro%C4%8Dil%C3%BD">pokročilý</a></li>
+            
+            <li><a href="/categories/za%C4%8D%C3%A1tky">začátky</a></li>
+            
+        </ul>
+    </div>
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+
+<div class="articles-list">
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/mage-2/">Mage - kompilace</a> - 2018-12-17 08:13:37</h3>
+        <p>V minulém díle jsme se podívali na nástroj <a href="https://magefile.org/">mage</a> a jeho použití pro sestavování #Go programů. Tentokrát se podíváme na jednu specialitku, která asi nebyla předem zřejmá, ale rozhodně stojí za prozkoumání.</p>
+<p>Jak z minula víte, <code>mage</code> potřebuje tzv. <code>magefile</code>. Magefile je vlastně go-skript na stereoidech. Pokud tedy chceme sestavit projekt, který používá <code>magefile</code>, tak zadáme na příkazovou řádku něco jako <code>mage</code> a máme hotovo (když je tedy definovaný defaultní cíl). Pokud bychom ovšem chtěli, aby se náš projekt takto pěkně spustil na našem CD/CI serveru, tak budeme muset přidat ještě něco - instalaci samotného <code>mage</code>. Takže náš skript by vypadal jako</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/mage/">Mage - nástroj pro sestavování (nejen) Go programů</a> - 2018-12-13 11:17:07</h3>
+        <p>Sastavování (kompilace + linkování) v Go je jedna z věcí, kde vládne organizovaný chaos. Samozřejmě <code>go build</code> prostě funguje. Ale v dnešní době je potřeba dělat mnohem víc věcí, než prosté <code>go build</code>. Bohužel nějaký standardní způsob neexistuje. Jelikož jsem odkojený Un*xem, tak preferuji nástroje, které se samy nabízejí - <code>make</code>. Člověk si udělá <code>makefile</code> a je spokojený - jako <a href="https://github.com/defectus/glutton/blob/master/makefile">například tento</a>. Nevýhodou makefilů je, že ne všichni jim rozumí, a i ti, kdo jim rozumí, obecně neznají všechny finty. Ruku na srdce, kdo ví, co dělá na příklad toto <code>go fmt $$(go list ./... | grep -v /vendor/)</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/reflexe/">Reflexe v #Go</a> - 2018-10-04 07:21:00</h3>
+        <p>V tomto příspěvku se podíváme na to, co to je reflexe, na co se používá a hlavně jak se používá. Hned z kraje jedna moudrá hláška</p>
+<h4 id="zřejmé-je-vždy-lepší-než-chytré--a-reflexe-není-nikdy-zřejmá">Zřejmé je vždy lepší než chytré &hellip; a reflexe není nikdy zřejmá.</h4>
+<p>Takže varování hned na úvod - reflexe ano, ale musíte k tomu mít dobrý důvod.</p>
+<p>O co se tedy jedná. Reflexe je schopnost zjišťovat si informace a typech a hodnotách dat za běhu programu. Ti kdo se s reflexí ještě nesetkali se možná ptají proč. Vždyť přeci kompilátor ví, jakého typu hodnoty jsou a za běhu není problém se k nim dostat. To je sice pravda, ale v okamžiku, kdy do svého kódu přidáte abstrakci, tedy interfacy, a nedej bože prázdné interfacy, už ani vy, ani kompilátor neví, jakého typu je proměnná a tím pádem nemáte možnost se ani zeptat na její hodnotu.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/throttling-v-go/">Throttling v Go</a> - 2017-09-19 06:07:45</h3>
+        <p>Throttling je způsob, jak omezit počet běžících vláken. Pokud chceme, abychom nezahltili druhý systém (subsystém) nekontrolovaným množství paralelních volání, potřebujeme způsob, jak omezit počet běžících go rutin.</p>
+<p>Určitě je mnoho způsobů, jak toho docílit, nabízím zde jeden, který se mi osvědčil.</p>
+<p>V zásadě vycházím z toho, že zápis do kanálu blokuje, pokud je překrečena kapacita bufferu kanálu.</p>
+<p>Tedy</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">// OK</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">2</span> <span style="color:#75715e">// blokuje, dokuď někdo kanál nepřečte</span>
+</span></span></code></pre></div><p>Tento konkrétní příklad vám neprojde, samotné Go detekuje deadlock (zápis bez čtení v jediné go rutině) a radši program zabije.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/golang-a-kryptografie/">Golang a kryptografie</a> - 2017-07-18 17:47:50</h3>
+        <p>Dnes si povíme něco o tom, jak funguje kryptografie v Go. Go jako (relativně) nový programovací je v této oblasti daleko a podporuje prakticky všechny možné šifry a řešení. Co je ale na osvěžující je fakt, že Go se stále snaží dělat věci jednoduše, takže na rozdíl od jiných nejmenovaných jazyků se zde nesetkáme s milionem interfaců a object factory.</p>
+<p>Kryptografie je opravdu obsáhlý prostor, takže my si ukážeme použitelné a praktické implementace kryptografie.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/generics-v-golang/">Generics v Golang</a> - 2017-06-21 12:59:02</h3>
+        <p>Poslední dobou je možné sledovat na poli jazyka <em>Go</em> zajímavou bitvu. Jak se blíží Go verze <code>2.0</code> (a pozor, po <code>1.9</code> může klidně přijít <code>1.10</code>), tak se začínají objevovat nápady typu &ldquo;přidejme do jazyka generické typy&rdquo;. Nejdřív jsem i já stál na generické straně barikády, ale musím uznat, že postupem času se spíš kloním ke skupině genericsů méně, nebo třeba vůbec ne. Možná bych chtěl na toto téma rozvířit debatu, takže zde je můj pohled na věc.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/vyctove-typy/">Výčtové typy</a> - 2017-05-12 07:35:51</h3>
+        <p>Určitě to víte - Go nepodporuje výčtové typy - tedy <code>enum</code>. Go umí numerické sekvence pomocí <code>iota</code>, ale to se opravdu nerovná enumu. Když jsem se nedávno na projektu vrátil ke staršímu kódu (který jsem napsal), tak jsem si uvědomil, že v jedné chvíli jsem vlastně použil něco, co může fungovat jako náhrada za výčty. No posuďte sami.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AnswerEnum</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Yes</span> <span style="color:#a6e22e">AnswerEnum</span> = <span style="color:#a6e22e">AnswerEnum</span>{<span style="color:#e6db74">&#34;Yes&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">No</span>  <span style="color:#a6e22e">AnswerEnum</span> = <span style="color:#a6e22e">AnswerEnum</span>{<span style="color:#e6db74">&#34;No&#34;</span>}
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">AnswerEnum</span>{<span style="color:#a6e22e">AnswerEnum</span>{<span style="color:#e6db74">&#34;Yes&#34;</span>}, <span style="color:#a6e22e">AnswerEnum</span>{<span style="color:#e6db74">&#34;No&#34;</span>}}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">answer</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cond</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">answer</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">Yes</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;na indexu&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#e6db74">&#34;je hodnota&#34;</span>, <span style="color:#a6e22e">Yes</span>.<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">No</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;na indexu&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#e6db74">&#34;je hodnota&#34;</span>, <span style="color:#a6e22e">No</span>.<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To co se zde děje je zjevné. Nejdříve si vytvoříme nový typ typu <code>AnswerEnum</code>, který je kompozicí typu <code>string</code>. Jelikož lze stringy mezi sebou porovnávat, tak je pak možné použít tyto hodnoty v bloku <code>switch</code>.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/jak-si-udelat-transakcni-databazi/">Jak si udělat transakční databázi</a> - 2017-04-13 12:29:57</h3>
+        <p>Určitě jste si toho všimli - Go má (podle mě) velmi dobrou podporu relačních databází. A to včetně věcí typu transakce. Pokud chcete ovšem transparentně přistupovat k databázi tak, aby vám bylo jedno, jestli dotaz provádíte v rámci transakce, nebo mimo ni, tak máte problém. Standardní API totiž rozlišuje mezi přímým dotazem do databáze a mezi dotazem v rámci transakce.</p>
+<p>Abychom tuto &ldquo;podružnost&rdquo; eliminovali, a také si ukázali jak si udělat abstrakční vrstvu nad konkrétní implementací, tak si napíšeme zaobalení (wrapper) databáze. Bude mít stejné funkce na provádění základních dotazů jako má standardní Go API.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/rozdil-mezi-kanalem-prazdne-struktury-a-kanalem-prazdneho-interfacu/">Rozdíl mezi kanálem prázdné struktury a kanálem prázdného interfacu</a> - 2017-04-02 06:35:51</h3>
+        <p>Mnohdy si člověk myslí, že něco je naprosto jasné. Tedy až do okamžiku, kdy dostanete dotaz, který vám ukáže, že nejasnosti jsou na každém rohu.</p>
+<p>Zrovna teď se mně kolega ptal, jaký je rozdíl mezi kanálem prázdné struktury a kanálem prázdného interfacu.</p>
+<p>Odpověď je, že zásadní.</p>
+<p>Prázdná struktura jako typ má omezené, ale legální použití. Sama o sobě nemůže nést data (nemá žádné pole, kam se dalo cokoliv uložit), ale už její přítomnost nám umožňuje ji použít na místech, kde prostě potřebujeme &ldquo;nějakou&rdquo; proměnnou. Jako další místo použití vidím jako možnost zavěsit na tuto strukturu receivera (příjemce) a použít takto vytvořenou proměnnou jako parametr typu interface.</p>
+    </article>
+    
+    <article>
+        <h3><a href="https://go.ondralinek.cz/post/predavani-poli-slicu-hodnotou-2/">Předávání polí (sliců) hodnotou a na co si dát pozor</a> - 2017-03-14 19:47:03</h3>
+        <p>Když jsme se bavili o slicech tak nezazněla jedna podstatná informace. Jak vlastně vypadá taková struktura slicu.</p>
+<p>Vytvořme si tedy slice.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">slice</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;délka:&#34;</span>, len(<span style="color:#a6e22e">slice</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;maximální délka:&#34;</span>, cap(<span style="color:#a6e22e">slice</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Délka i maximální délka jsou shodné, tedy 0.</p>
+<p>Teď si k danému slicu přidejme jedno položku a zkusme to znovu.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">slice</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">slice</span> = append(<span style="color:#a6e22e">slice</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;délka:&#34;</span>, len(<span style="color:#a6e22e">slice</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;maximální délka:&#34;</span>, cap(<span style="color:#a6e22e">slice</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Tentokrát je délka 1 a maximální délka je 2. Co to znamená? <code>append</code> nám nejen přidal do pole jednu položku, ale také nám nechal ve slicu &ldquo;fuku&rdquo; pro jedno další číslo. Tzn. pokud přidáme další položku, tak nám <code>append</code> nemusí zvětšovat pole, prostě přidá položku na konec již alokovaného pole.</p>
+    </article>
+    
+</div>
+
+    <ul class="pagination pagination-default">
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/tags/pokro%C4%8Dil%C3%BD/page/3/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
+</div>
+</div>
+<script src="https://go.ondralinek.cz//js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+
