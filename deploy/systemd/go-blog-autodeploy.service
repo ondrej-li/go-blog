@@ -1,0 +1,25 @@
+# /etc/systemd/system/go-blog-autodeploy.service
+# Installed by deploy/deploy.sh; enabled by go-blog-autodeploy.timer.
+[Unit]
+Description=go.ondralinek.cz — pull new articles, rebuild and publish
+Documentation=https://github.com/ondrej-li/go-blog/blob/master/deploy/DEPLOY.md
+Wants=network-online.target
+After=network-online.target
+ConditionPathIsDirectory=/home/deploy/go-blog/.git
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+WorkingDirectory=/home/deploy/go-blog
+Environment=MAIL_TO=admin@ondralinek.cz
+ExecStart=/home/deploy/go-blog/deploy/autodeploy.sh
+TimeoutStartSec=10min
+Nice=10
+IOSchedulingClass=idle
+
+# deploy.sh needs sudo to rsync into /var/www/go-blog, install the vhost and
+# reload nginx, so filesystem sandboxing would block the legitimate work.
+# The unit still runs as the unprivileged deploy user with a short timeout.
+PrivateTmp=yes
+NoNewPrivileges=no
