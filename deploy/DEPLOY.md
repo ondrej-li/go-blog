@@ -10,7 +10,7 @@ serves plain files, the source lives in git and the build runs on the VPS.
 | Source checkout | `~/go-blog` (deploy user, clone of github.com/ondrej-li/go-blog) |
 | vhost | `/etc/nginx/sites-available/go-blog` → `sites-enabled/go-blog` |
 | headers | `/etc/nginx/snippets/go-blog-headers.conf` (HSTS + CSP + …) |
-| TLS | `/etc/letsencrypt/live/go.ondralinek.cz/` (Let's Encrypt) |
+| TLS | `/etc/letsencrypt/live/go.ondralinek.cz/` (Let's Encrypt, expires 2027-02-07) |
 | renewal | `certbot.timer`; deploy hook reloads nginx |
 | logs | `/var/log/nginx/go-blog.access.log`, `go-blog.error.log` |
 | build tool | Hugo **0.146.0** in `/usr/local/bin/hugo` (pinned) |
@@ -99,7 +99,8 @@ untouched, so reverting the record is the rollback plan.
 
 ## TLS
 
-Run only after DNS points here:
+Issued on 2026-11-09 and live (HTTP/2, HSTS, HTTP→HTTPS 301). Run the cutover
+script only after DNS points here (e.g. when rebuilding the host):
 
 ```bash
 cd ~/go-blog
