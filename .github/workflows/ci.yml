@@ -1,0 +1,46 @@
+name: CI
+
+# Nothing is built on a developer machine any more: the site is generated here
+# and published by GitHub Pages from docs/, so this workflow is the only place
+# that proves the content still renders.
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  hugo:
+    name: Build the site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.146.0"
+
+      - name: Build
+        run: hugo -d ./docs
+
+      # docs/ is the published copy, and every post is rendered from content/.
+      # A diff here means someone edited content and forgot `make publish`.
+      - name: Check the published copy is up to date
+        run: |
+          if [ -n "$(git status --porcelain -- docs)" ]; then
+            echo "docs/ does not match this content; run 'make publish' and commit it"
+            git --no-pager diff --stat -- docs
+            exit 1
+          fi
+          echo "docs/ matches the content"
